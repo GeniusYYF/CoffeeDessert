@@ -1,54 +1,151 @@
 <template>
-	<div id="app">
-		<router-view />
+  <div id="app">
+    <router-view />
 
-		<loading :text="loadingText" duration="1" v-show="loading" :firstBig="firstBig"></loading>
-	</div>
+    <loading :text="loadingText" duration="1" v-show="loading" :firstBig="firstBig"></loading>
+  </div>
 </template>
 
 <script>
-	export default {
-		name: 'App',
-		data() {
-			return {
-				loading: false,
-				loadingText: "Load...",
-				firstBig:true
+export default {
+  name: "App",
+  data() {
+    return {
+      loading: false,
+      loadingText: "Load...",
+      firstBig: true
+    };
+  },
+  mounted() {
+    this.$eventHub.$on("loading", loading => {
+      this.loading = loading;
+    });
+    this.$eventHub.$on("loadingText", loadingText => {
+      this.loadingText = loadingText;
+    });
+    this.$eventHub.$on("firstBig", firstBig => {
+      this.firstBig = firstBig;
+    });
+
+    var faceList = [
+      "😀",
+      "😁",
+      "😂",
+      "🤣",
+      "😃",
+      "😄",
+      "😅",
+      "😆",
+      "😉",
+      "😊",
+      "😋",
+      "😎",
+      "😍",
+      "😘",
+      "😗",
+      "😙",
+      "😚",
+      "🙂",
+      "🤗",
+      "🤩",
+      "🤔",
+      "🤨",
+      "😐",
+      "😑",
+      "😶",
+      "🙄",
+      "😏",
+      "😣",
+      "😥"
+    ];
+
+    var starList = ["☆", "★"];
+
+    var loveList = ["❤", "🧡", "💛", "💙", "💚", "💜", "🖤", "💗"];
+
+    var movePx = 0, //用做记录距上次显示图像后的移动距离px
+      intervalPx = 200, // 超过这个px长度后自动产生一个
+      intervalStars = "", // 定时清空器
+      span, // span元素
+      time = 8, // 动画时间，清空间隔（*10s）
+      spans = [], // 产生的所有span
+      style = document.createElement("style"), // 增加到头部的动画函数样式
+      drop = document.createElement("span"), // 用于放产生的所有元素
+      body = document.querySelector("body"); // body
+
+    body.appendChild(drop);
+    style.type = "text/css";
+    style.innerText = `
+			@keyframes mymove
+			{
+			from {}
+			to {top:2020px;display:none}
 			}
-		},
-		mounted() {
-			this.$eventHub.$on("loading", loading => {
-				this.loading = loading;
-			});
-			this.$eventHub.$on("loadingText", loadingText => {
-				this.loadingText = loadingText;
-			});
-			this.$eventHub.$on("firstBig", firstBig => {
-				this.firstBig = firstBig;
-			});
-		}
-	}
+    	`;
+    document.querySelector("head").appendChild(style);
+
+    intervalStars = setInterval(() => {
+      if (spans.length > 0) {
+        spans.forEach((span, i) => {
+          span.remove();
+          console.log(`共${spans.length}个星星，正在清空第${i + 1}个星星...`);
+        });
+        spans = [];
+      } else console.log("此时没用星星!");
+    }, time * 10000);
+
+    body.addEventListener("mousemove", e => {
+      console.log(movePx, e.x, e.y);
+      if (movePx > intervalPx) {
+        span = document.createElement("span");
+        spans.push(span);
+        let rand = Math.floor(Math.random() * loveList.length);
+
+        span.style.cssText = `
+			position:fixed;
+			left:${e.x}px;
+			top:${e.y}px;
+			animation:mymove ${time}s 1;
+			animation-fill-mode:forwards;
+			font-size:${(rand + 12) * 2}px;
+			text-shadow: 2px 2px 2px red;
+			opacity:.5;
+			`;
+        span.innerText = loveList[rand];
+        drop.appendChild(span);
+        movePx = 0;
+      } else movePx++;
+    });
+  }
+};
 </script>
 
 <style lang="scss">
-	html{
-		height: 100%;
-		background-color: rgba($color: #fffeef, $alpha: .4);
-	}
-	
-	#app {
-		font-family: 'Avenir', Helvetica, Arial, sans-serif;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-		text-align: center;
-		color: #2c3e50;
-	}
+html,body,#app{
+	height: 100%;
+}
+html {
+  background-color: rgba($color: #fffeef, $alpha: 0.4);
 
-	.divider {
-		height: 1px !important;
+  // 鼠标样式
+  cursor: url("./assets/cursor.gif"), default;
+}
+body{
+	margin: 0;
+}
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
 
-		.el-divider {
-			margin: 5px 0;
-		}
-	}
+.divider {
+  height: 1px !important;
+
+  .el-divider {
+    margin: 5px 0;
+  }
+}
 </style>
