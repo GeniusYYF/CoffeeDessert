@@ -18,58 +18,86 @@ import NotFound from '@/components/not-found/not1'
 Vue.use(Router)
 
 const routes = [{
-		path: '/',
-		name: 'CoffeeDessert',
-		component: CoffeeDessert,
-		redirect: '/home',
-		children: [{
-				path: '/home',
-				component: Home
+	path: '/',
+	name: 'CoffeeDessert',
+	component: CoffeeDessert,
+	redirect: '/home',
+	children: [{
+		path: '/home',
+		component: Home
+	},
+	{
+		path: '/match-make',
+		component: MatchMake,
+		redirect: '/match-make/match',
+		children: [
+			{
+				path: 'match',
+				component:() => import('@/views/match-make/match'),
+				// component: resolve => require(['@/views/match-make/match-content/match.vue'], resolve)
 			},
 			{
-				path: '/match-make',
-				component: MatchMake
+				path: 'make-use',
+				component:() => import('@/views/match-make/make-content/use'),
 			},
 			{
-				path: '/news',
-				component: News
+				path: 'make-case',
+				component:() => import('@/views/match-make/make-content/case')
 			},
 			{
-				path: '/discuss',
-				component: Discuss
+				path: 'make-analyse',
+				component:() => import('@/views/match-make/make-content/analyse')
 			},
 			{
-				path: '/about',
-				component: About
+				path: 'state',
+				component:() => import('@/views/match-make/state')
 			},
 			{
-				path: '/personal',
-				component: Personal
-			},
-			{
-				path: '/regist-face',
-				component: RegistFace
-			},
-			{
-				path: '/404',
-				component: NotFound
+				path: 'goodbad',
+				component:() => import('@/views/match-make/goodbad')
 			}
 		]
 	},
 	{
-		path: '/login',
-		component: Login,
-		meta: {
-			requireAuth: false,
-		}
+		path: '/news',
+		component: News
 	},
 	{
-		path: '*',
-		redirect: '/404',
-		meta: {
-			requireAuth: false,
-		},
+		path: '/discuss',
+		component: Discuss
+	},
+	{
+		path: '/about',
+		component: About
+	},
+	{
+		path: '/personal',
+		component: Personal
+	},
+	{
+		path: '/regist-face',
+		component: RegistFace
+	},
+	{
+		path: '/404',
+		component: NotFound
 	}
+	]
+},
+{
+	path: '/login',
+	component: Login,
+	meta: {
+		requireAuth: false,
+	}
+},
+{
+	path: '*',
+	redirect: '/404',
+	meta: {
+		requireAuth: false,
+	},
+}
 ]
 
 
@@ -79,11 +107,11 @@ const router = new Router({
 // 设置路由守卫，在进页面之前，判断有token，才进入页面，否则返回登录页面
 router.beforeEach((to, from, next) => {
 	// 默认requiresAuth为false才不需要登录，其他都要
-	if (to.meta.requireAuth||to.meta.requireAuth==undefined) {
+	if (to.meta.requireAuth || to.meta.requireAuth == undefined) {
 		console.log("校验token")
 		let tokenInfo = storage.get('tokenInfo')
 		if (tokenInfo) {
-			console.log("有token",tokenInfo)
+			console.log("有token", tokenInfo)
 			next();
 		} else {
 			next({

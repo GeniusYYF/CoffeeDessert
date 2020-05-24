@@ -1,7 +1,10 @@
 <template>
-  <div id="app">
-    <router-view />
+  <div id="app" class="wrapper">
+    <template>
+      <el-backtop target=".wrapper" :visibility-height="200" :right="40" :bottom="40"></el-backtop>
+    </template>
 
+    <router-view />
     <loading :text="loadingText" duration="1" v-show="loading" :firstBig="firstBig"></loading>
   </div>
 </template>
@@ -95,7 +98,7 @@ export default {
     }, time * 10000);
 
     body.addEventListener("mousemove", e => {
-      console.log(movePx, e.x, e.y);
+      // console.log(movePx, e.x, e.y);
       if (movePx > intervalPx) {
         span = document.createElement("span");
         spans.push(span);
@@ -121,17 +124,19 @@ export default {
 </script>
 
 <style lang="scss">
-html,body,#app{
-	height: 100%;
+html,
+body,
+#app {
+  height: 100%;
 }
 html {
-  background-color: rgba($color: #fffeef, $alpha: 0.4);
+  background-color: rgba($color: #fffffb, $alpha: 1);
 
   // 鼠标样式
   cursor: url("./assets/cursor.gif"), default;
 }
-body{
-	margin: 0;
+body {
+  margin: 0;
 }
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
@@ -139,13 +144,25 @@ body{
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  overflow: auto;
 }
 
-.divider {
-  height: 1px !important;
+::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
 
-  .el-divider {
-    margin: 5px 0;
+.el-menu--horizontal {
+  .el-menu {
+    .el-menu-item:hover {
+      background-color: rgba($color: rgb(253, 244, 196), $alpha: 0.7);
+    }
+    .divider {
+      height: 1px !important;
+
+      .el-divider {
+        margin: 5px 0;
+      }
+    }
   }
 }
 </style>

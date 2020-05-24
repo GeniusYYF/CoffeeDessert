@@ -39,4 +39,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-header {
+  padding: 0;
+}
+.el-main {
+  padding: 0;
+}
 </style>
