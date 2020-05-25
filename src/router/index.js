@@ -33,28 +33,28 @@ const routes = [{
 		children: [
 			{
 				path: 'match',
-				component:() => import('@/views/match-make/match'),
+				component: () => import('@/views/match-make/match'),
 				// component: resolve => require(['@/views/match-make/match-content/match.vue'], resolve)
 			},
 			{
 				path: 'make-use',
-				component:() => import('@/views/match-make/make-content/use'),
+				component: () => import('@/views/match-make/make-content/use'),
 			},
 			{
 				path: 'make-case',
-				component:() => import('@/views/match-make/make-content/case')
+				component: () => import('@/views/match-make/make-content/case')
 			},
 			{
 				path: 'make-analyse',
-				component:() => import('@/views/match-make/make-content/analyse')
+				component: () => import('@/views/match-make/make-content/analyse')
 			},
 			{
 				path: 'state',
-				component:() => import('@/views/match-make/state')
+				component: () => import('@/views/match-make/state')
 			},
 			{
 				path: 'goodbad',
-				component:() => import('@/views/match-make/goodbad')
+				component: () => import('@/views/match-make/goodbad')
 			}
 		]
 	},
@@ -109,21 +109,28 @@ router.beforeEach((to, from, next) => {
 	// 默认requiresAuth为false才不需要登录，其他都要
 	if (to.meta.requireAuth || to.meta.requireAuth == undefined) {
 		console.log("校验token")
-		let tokenInfo = storage.get('tokenInfo')
-		if (tokenInfo) {
-			console.log("有token", tokenInfo)
-			next();
-		} else {
-			next({
-				path: "/login",
-				query: {
-					redirect: to.fullPath
-				} // 将刚刚要去的路由path（却无权限）作为参数，方便登录成功后直接跳转到该路由
-			});
+		let user = storage.get('user') || null
+		if (user ? user.token : false) {
+			console.log("有token", user)
+			let stamp = user.token.stamp
+			// 如果有tokne并且当前时间戳小于失效时间戳，继续执行；否则跳转登录
+			if (stamp && Date.now() < stamp) {
+				next();
+				return
+			} else
+				storage.remove('user')
 		}
+		next({
+			path: "/login",
+			query: {
+				redirect: to.fullPath
+			} // 将刚刚要去的路由path（却无权限）作为参数，方便登录成功后直接跳转到该路由
+		});
+
 	} else {
 		next(); //如果无需token,那么随它去吧
 	}
 });
+
 
 export default router

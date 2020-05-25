@@ -18,7 +18,7 @@
 
     <el-submenu index class="personal">
       <template slot="title">Genius淼</template>
-      <el-menu-item  @click="$router.push({path:'/discuss',meta:{activeName:'fourth'}})">个人中心</el-menu-item>
+      <el-menu-item @click="$router.push({path:'/discuss',meta:{activeName:'fourth'}})">个人中心</el-menu-item>
       <el-menu-item index="/regist-face" disabled>注册人脸</el-menu-item>
       <!-- <a href="https://www.ele.me" target="_blank">注册人脸</a> 	-->
       <el-menu-item index class="divider">
@@ -45,8 +45,13 @@ export default {
       console.log(key, keyPath);
     },
     quit() {
-      this.$storage.remove("tokenInfo");
-      this.$router.push("/login");
+      this.$eventHub.$emit("loading", true);
+      this.$storage.remove("user");
+
+      setTimeout(() => {
+        this.$eventHub.$emit("loading", false);
+        this.$router.push("/login");
+      }, 1000);
     }
   }
 };
