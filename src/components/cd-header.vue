@@ -16,9 +16,21 @@
     <el-menu-item index="/discuss">咖啡圈子</el-menu-item>
     <el-menu-item index="/about">关于CD</el-menu-item>
 
-    <el-submenu index class="personal">
-      <template slot="title">Genius淼</template>
-      <el-menu-item @click="$router.push({path:'/discuss',meta:{activeName:'fourth'}})">个人中心</el-menu-item>
+    <el-submenu index class="personal" v-if="user">
+      <template slot="title">
+        <el-avatar
+          v-show="img=='man'"
+          :size="30"
+          :src="require('./img/man.jpg')"
+        ></el-avatar>
+        <el-avatar
+          v-show="img=='woman'"
+          :size="30"
+          :src="require('./img/woman.jpg')"
+        ></el-avatar>
+        {{user.name}}
+      </template>
+      <el-menu-item @click="$router.push({path:'/discuss',query:{activeName:'fourth'}})">个人中心</el-menu-item>
       <el-menu-item index="/regist-face" disabled>注册人脸</el-menu-item>
       <!-- <a href="https://www.ele.me" target="_blank">注册人脸</a> 	-->
       <el-menu-item index class="divider">
@@ -27,6 +39,12 @@
 
       <el-menu-item index @click="quit()">退出登录</el-menu-item>
     </el-submenu>
+
+    <el-menu-item
+      v-else
+      class="unload"
+      @click="$router.push({path:'/login',query:{loginToPage:$route.fullPath}})"
+    >登录</el-menu-item>
 
     <!-- <el-menu-item index="/404">404</el-menu-item> -->
   </el-menu>
@@ -37,7 +55,9 @@ export default {
   name: "CdHeader",
   data() {
     return {
-      activeIndex: "/home"
+      activeIndex: "/home",
+      user: "",
+      img: ""
     };
   },
   methods: {
@@ -53,6 +73,15 @@ export default {
         this.$router.push("/login");
       }, 1000);
     }
+  },
+  mounted() {
+    this.user = this.$storage.get("user");
+    this.img = this.user.msg.headImg
+    console.log(this.user, this.user.msg.headImg);
+    this.$eventHub.$on("headImg", val => {
+      console.log(val)
+      this.img = val;
+    });
   }
 };
 </script>
@@ -108,6 +137,12 @@ export default {
       &:hover {
         background-color: rgba($color: rgb(253, 244, 196), $alpha: 0.3);
       }
+    }
+  }
+  .unload {
+    float: right;
+    &:hover {
+      background-color: rgba($color: rgb(253, 244, 196), $alpha: 0.3);
     }
   }
 }

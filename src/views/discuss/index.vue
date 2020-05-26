@@ -26,7 +26,7 @@
           <div class="content">
             <!-- el-icon-female -->
             <h2>
-              Genius淼 &nbsp;
+              {{msg.name}} &nbsp;
               <i
                 v-show="msg.sex=='男'"
                 class="el-icon-male"
@@ -131,7 +131,7 @@
             </el-divider>
 
             <el-form v-model="msg" label-width="100px" size="small" label-suffix="：">
-              <el-form-item label="名称" prop="name">
+              <el-form-item label="名称">
                 <span>{{msg.name}}</span>
               </el-form-item>
 
@@ -201,7 +201,6 @@
                         :class="{highLight:msg.headImg=='man'}"
                         :size="50"
                         :src="require(headImg.man+'')"
-                        @onclick="tabClick"
                       ></el-avatar>
                     </a>
                     <a @click="msg.headImg='woman'">
@@ -233,20 +232,18 @@ export default {
       headImg: { man: "./img/man.jpg", woman: "./img/woman.jpg" },
       msg: {
         name: "Genius淼",
-        img: "",
-        age: "23",
+        age: "",
         sex: "未知",
         sign: "我是个性签名...",
-        tags: ["tag1"],
+        tags: [],
         headImg: "man"
       },
       msgCache: {
         name: "Genius淼",
-        img: "",
-        age: "23",
+        age: "",
         sex: "未知",
         sign: "我是个性签名...",
-        tags: ["tag1"],
+        tags: [],
         headImg: "man"
       },
       inputVisible: false,
@@ -263,7 +260,10 @@ export default {
         title: "",
         text: "",
         imgList: []
-      }
+      },
+      userList: [],
+      userNames: {},
+      adminList: []
     };
   },
   methods: {
@@ -370,10 +370,20 @@ export default {
       this.$storage.set("speaks", data);
       this.$eventHub.$emit("loading", false);
     },
-    
+
     saveMsg() {
+      this.user.msg = this.msg;
+      this.$storage.set("user", this.user);
+
+      this.userList[this.userNames[this.user.name]] = this.user;
+      this.$storage.set("userList", this.userList);
+      console.log(this.msg, this.userList, this.$storage.get("userList"));
+
+      this.$eventHub.$emit("headImg", this.msg.headImg);
+
       this.edit = false;
       this.msgCache = JSON.parse(JSON.stringify(this.msg));
+      this.$message.success("保存成功！");
     },
     cancelMsg() {
       this.edit = false;
@@ -381,8 +391,27 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route.meta.activeName);
-    this.activeName = this.$route.meta.activeName || "first";
+    console.log(this.$router.currentRoute.query.activeName, this.$route);
+    this.activeName = this.$router.currentRoute.query.activeName || "first";
+    this.user = this.$storage.get("user");
+    let user = this.user,
+      msg = this.msg;
+    console.log(user, msg);
+
+    msg.name = user.msg.name || "";
+    msg.age = user.msg.age || "";
+    msg.sex = user.msg.sex || "";
+    msg.sign = user.msg.sign || "说点什么吧";
+    msg.tags = user.msg.tags || [];
+    msg.headImg = user.msg.headImg || "man";
+
+    this.msgCache = JSON.parse(JSON.stringify(this.msg));
+
+    this.userList = this.$storage.get("userList");
+    this.userList.forEach((item, i) => {
+      this.userNames[item.name] = i;
+    });
+    console.log(this.userNames);
     // this.bgHeight = document.body.offsetHeight + "px";
   }
 };
@@ -449,53 +478,57 @@ $contentWidth: 60%;
         margin: 0 auto 20px;
         width: $contentWidth;
         // padding: 20px;
-        // background-color: rgba($color: $bgColor, $alpha: 0.9);
+
         text-align: left;
         min-height: 200px;
-        .title {
-          margin-bottom: 10px;
-          .el-input__inner {
+
+        .el-card {
+          background-color: rgba($color: $bgColor, $alpha: 0.9);
+          .title {
+            margin-bottom: 10px;
+            .el-input__inner {
+              &:hover {
+                border: 1px solid rgba($color: $focusColor, $alpha: 0.5);
+                box-shadow: 0 0 1.5px $focusColor;
+              }
+            }
+          }
+          .content {
+            position: relative;
+            padding-left: 0;
+            border: 1px solid #ebeef5;
+            border-radius: 5px;
+
             &:hover {
               border: 1px solid rgba($color: $focusColor, $alpha: 0.5);
               box-shadow: 0 0 1.5px $focusColor;
             }
-          }
-        }
-        .content {
-          position: relative;
-          padding-left: 0;
-          border: 1px solid #ebeef5;
-          border-radius: 5px;
 
-          &:hover {
-            border: 1px solid rgba($color: $focusColor, $alpha: 0.5);
-            box-shadow: 0 0 1.5px $focusColor;
-          }
+            .text {
+              margin-bottom: 10px;
+              /deep/ .el-textarea__inner {
+                border: none;
+              }
+            }
+            .upload {
+              padding: 10px;
+              .el-upload.el-upload--picture-card,
+              /deep/ .el-upload-list__item {
+                height: 100px;
+                width: 100px;
+              }
 
-          .text {
-            margin-bottom: 10px;
-            /deep/ .el-textarea__inner {
-              border: none;
+              .el-upload.el-upload--picture-card {
+                line-height: 100px;
+              }
             }
           }
-          .upload {
-            padding: 10px;
-            .el-upload.el-upload--picture-card,
-            /deep/ .el-upload-list__item {
-              height: 100px;
-              width: 100px;
+          .push-speak {
+            display: inline-block;
+            width: 100%;
+            .el-button {
+              float: right;
             }
-
-            .el-upload.el-upload--picture-card {
-              line-height: 100px;
-            }
-          }
-        }
-        .push-speak {
-          display: inline-block;
-          width: 100%;
-          .el-button {
-            float: right;
           }
         }
       }

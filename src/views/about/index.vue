@@ -34,14 +34,16 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="status=2">提 交</el-button>
+        <el-button type="primary" @click="submit">提 交</el-button>
       </el-form-item>
     </el-form>
 
     <div class="model2" v-else-if="status==2">
       <i class="el-icon-circle-check"></i>
       <span>提交成功！请耐心等待...</span>
-      <div><el-button  @click="status=3">刷新进度</el-button></div>
+      <div>
+        <el-button @click="refresh">刷新进度</el-button>
+      </div>
     </div>
 
     <el-form
@@ -69,11 +71,11 @@
         ></el-rate>
       </el-form-item>
       <el-form-item label="回馈：">
-        <span>{{res.idea}}</span>
+        <span>{{res.replyText}}</span>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="success" @click="status=1;">再来提一下</el-button>
+        <el-button type="success" @click="reset">再来提一下</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -91,20 +93,130 @@ export default {
         qq: "739416541",
         tips: "有（好的）想法就说出来嘛"
       },
-
       feedback: {
-        rate: null,
+        rate: 0,
+        idea: "",
+        tel: ""
+      },
+      feedbackCache: {
+        rate: 0,
         idea: "",
         tel: ""
       },
       res: {
-        rate: "4.5",
-        idea: "感谢反馈！"
+        rate: "",
+        replyText: ""
       },
-      status: 1
+      status: 1,
+      user: {},
+      adminList: []
     };
   },
-  methods: {}
+  methods: {
+    same(a, b) {
+      return JSON.stringify(a) == JSON.stringify(b);
+    },
+    submit() {
+      let error = "";
+      if (this.feedback.rate == 0) error = "星星还没点呢";
+      else if (this.feedback.idea == "") error = "请留下你的idea";
+      else if (this.feedback.tel == "") error = "你还没告诉我怎么联系你呢";
+
+      if (error) {
+        this.$notify({
+          title: "警告",
+          message: error,
+          type: "warning"
+        });
+      } else {
+        this.$eventHub.$emit("loading", true);
+        setTimeout(() => {
+          let adminList = this.adminList,
+            author = adminList[0],
+            ideas = author.ideas || [],
+            user = this.user,
+            feedback = this.feedback,
+            item = {
+              userId: user.id,
+              userName: user.name,
+              rate: feedback.rate,
+              idea: feedback.idea,
+              tel: feedback.tel,
+              replyText: ""
+            }; // 填写内容
+
+          let res = this.getListIndex(ideas, "userId", this.user.id);
+          if (res.item) {
+            ideas[res.index] = item;
+          } else {
+            ideas.push(item);
+          }
+
+          adminList[0] = author;
+          this.$storage.set("adminList", adminList);
+          console.log(adminList);
+
+          this.$eventHub.$emit("loading", false);
+          this.status = 2;
+        }, 500);
+      }
+    },
+    refresh() {
+      let ideas = this.adminList[0].ideas;
+      let idea = "";
+
+      idea = this.getListIndex(ideas, "userId", this.user.id).item;
+      idea.replyText = "sdasdsa";
+      if (idea.replyText) {
+        this.res.rate = idea.rate;
+        this.res.replyText = idea.replyText;
+        this.status = 3;
+      } else {
+        this.$notify({
+          title: "通知",
+          message: "稍安勿躁，作者还在回复的路上...",
+          type: "info"
+        });
+      }
+    },
+    initStatus() {
+      let ideas = this.adminList[0].ideas || [];
+      let idea = "";
+
+      idea = this.getListIndex(ideas, "userId", this.user.id).item;
+      if (idea) this.status = idea.replyText ? 3 : 2;
+      else this.status = 1;
+    },
+    // [{k:v},]
+    getListIndex(list, k, v) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i][k] == v) {
+          return { index: i, val: v, item: list[i] };
+        }
+      }
+      return { index: "", val: "", item: "" };
+    },
+    reset() {
+      let index = this.getListIndex(
+        this.adminList[0].ideas,
+        "userId",
+        this.user.id
+      ).index;
+      // 避免 0 触发成false
+      if (index + "") {
+        this.adminList[0].ideas.splice(index, 1);
+        this.$storage.set("adminList", this.adminList);
+        console.log(this.adminList[0].ideas);
+      }
+      this.status = 1;
+    }
+  },
+  mounted() {
+    this.adminList = this.$storage.get("adminList");
+    this.user = this.$storage.get("user");
+    this.initStatus();
+    // console.log(this.adminList)
+  }
 };
 </script>
 
@@ -124,12 +236,12 @@ export default {
     font-size: 30px;
     color: springgreen;
     text-align: center;
-    div{
+    div {
       margin-top: 20px;
     }
   }
-  .model3{
-padding: 20px 0;
+  .model3 {
+    padding: 20px 0;
   }
 }
 </style>

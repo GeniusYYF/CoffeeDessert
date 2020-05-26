@@ -9,7 +9,7 @@ import MatchMake from '@/views/match-make'
 import News from '@/views/news'
 import Discuss from '@/views/discuss'
 import About from '@/views/about'
-import Personal from '@/views/personal'
+// import Personal from '@/views/personal'
 import RegistFace from '@/views/regist-face'
 import Login from '@/views/login'
 
@@ -24,43 +24,70 @@ const routes = [{
 	redirect: '/home',
 	children: [{
 		path: '/home',
-		component: Home
+		component: Home,
+		meta: {
+			requireAuth: false,
+		}
 	},
 	{
 		path: '/match-make',
 		component: MatchMake,
 		redirect: '/match-make/match',
+		meta: {
+			requireAuth: false,
+		},
 		children: [
 			{
 				path: 'match',
 				component: () => import('@/views/match-make/match'),
 				// component: resolve => require(['@/views/match-make/match-content/match.vue'], resolve)
+	meta: {
+		requireAuth: false,
+	}
 			},
 			{
 				path: 'make-use',
 				component: () => import('@/views/match-make/make-content/use'),
+				meta: {
+					requireAuth: false,
+				}
 			},
 			{
 				path: 'make-case',
-				component: () => import('@/views/match-make/make-content/case')
+				component: () => import('@/views/match-make/make-content/case'),
+				meta: {
+					requireAuth: false,
+				}
 			},
 			{
 				path: 'make-analyse',
-				component: () => import('@/views/match-make/make-content/analyse')
+				component: () => import('@/views/match-make/make-content/analyse'),
+				meta: {
+					requireAuth: false,
+				}
 			},
 			{
 				path: 'state',
-				component: () => import('@/views/match-make/state')
+				component: () => import('@/views/match-make/state'),
+				meta: {
+					requireAuth: false,
+				}
 			},
 			{
 				path: 'goodbad',
-				component: () => import('@/views/match-make/goodbad')
+				component: () => import('@/views/match-make/goodbad'),
+				meta: {
+					requireAuth: false,
+				}
 			}
 		]
 	},
 	{
 		path: '/news',
-		component: News
+		component: News,
+		meta: {
+			requireAuth: false,
+		}
 	},
 	{
 		path: '/discuss',
@@ -71,16 +98,15 @@ const routes = [{
 		component: About
 	},
 	{
-		path: '/personal',
-		component: Personal
-	},
-	{
 		path: '/regist-face',
 		component: RegistFace
 	},
 	{
 		path: '/404',
-		component: NotFound
+		component: NotFound,
+		meta: {
+			requireAuth: false,
+		}
 	}
 	]
 },

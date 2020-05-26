@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="box" v-if="order=='login'">
+    <div class="box" v-if="box=='login'">
       <div class="title">
         <span>登 录</span>
       </div>
@@ -25,8 +25,8 @@
           <span slot="label">
             <el-button
               type="text"
-              class="regist"
-              @click="order='regist'"
+              class="regist-btn"
+              @click="box='regist'"
             >注册&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
           </span>
           <el-button
@@ -34,11 +34,12 @@
             class="login-btn"
             @click="submitForm()"
           >登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</el-button>
+          <el-button type="text" class="jump-btn" @click="$router.push('/')">跳过登录</el-button>
         </el-form-item>
       </el-form>
     </div>
 
-    <div class="box" v-else-if="order=='regist'">
+    <div class="box" v-else-if="box=='regist'">
       <div class="title">
         <span>注 册</span>
       </div>
@@ -73,8 +74,8 @@
           <span slot="label">
             <el-button
               type="text"
-              class="regist"
-              @click="order='login'"
+              class="regist-btn"
+              @click="box='login'"
             >返回&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
           </span>
           <el-button
@@ -93,12 +94,13 @@ import { postLogin } from "@/api/login";
 
 export default {
   name: "",
+  computed: {},
   data() {
     return {
       form: {
-        name: "Genius淼",
-        password: "739416541",
-        order: "yuwan"
+        name: "",
+        password: "",
+        order: ""
       },
       form2: {
         name: "",
@@ -107,13 +109,32 @@ export default {
         order: ""
       },
       admin: {
+        id: "0",
         name: "Genius淼",
         password: "739416541",
-        order: "yuwan"
+        order: ""
       },
       allowRun: true,
-      order: "login",
-      token: { order: "***", valid: "10" }
+      box: "login",
+      token: { order: "***", valid: "3600" },
+      order: {
+        get: () => {
+          var date = Date.now();
+          var temp = parseInt(date / 1000 / 60) / 19980818 + "";
+          var order = temp.slice(temp.length - 6);
+          console.log(
+            "时间戳：",
+            date,
+            "分钟：",
+            parseInt(date / 1000 / 60),
+            "temp：",
+            temp,
+            "order：",
+            order
+          );
+          return order;
+        }
+      }
     };
   },
   methods: {
@@ -143,28 +164,34 @@ export default {
         this.$eventHub.$emit("loading", true);
         this.allowRun = false;
         var res = false,
-          admin = false;
+          admin = false,
+          index = 0;
 
-        if (form.name == "Genius淼") {
-          if (this.same(form, this.admin)) res = true;
-        } else {
-          let userList = this.$storage.get("userList") || [];
-          let adminList = this.$storage.get("adminList") || [];
-          form.order = "";
-          for (let i = 0; i < userList.length; i++) {
-            if (this.same(userList[i], form)) {
-              res = true;
-              break;
-            }
+        let userList = this.$storage.get("userList") || [];
+        let adminList = this.$storage.get("adminList") || [];
+        let name = "",
+          password = "";
+
+        for (let i = 0; i < userList.length; i++) {
+          if (
+            form.name == userList[i].name &&
+            form.password == userList[i].password
+          ) {
+            res = true;
+            index = i;
+            break;
           }
-          if (!res) {
-            form.order = "yuwan";
-            for (let i = 0; i < adminList.length; i++) {
-              if (this.same(adminList[i], form)) {
-                res = true;
-                admin = true;
-                break;
-              }
+        }
+        if (!res) {
+          for (let i = 0; i < adminList.length; i++) {
+            if (
+              form.name == adminList[i].name &&
+              form.password == adminList[i].password
+            ) {
+              res = true;
+              admin = true;
+              index = i;
+              break;
             }
           }
         }
@@ -172,13 +199,16 @@ export default {
         setTimeout(() => {
           if (res) {
             // 增加失效时间 stamp
+            let user = admin ? adminList[index] : userList[index];
             this.token["stamp"] = Date.now() + Number(this.token.valid) * 1000;
-            form.token = this.token;
-            this.$storage.set("user", form);
+            user.token = this.token;
+            this.$storage.set("user", user);
             // 此时要判断/login的参数，若无参数，进入主页；若有参数则参数为未有权限的那个路由，跳转到那个路由
-            let path = this.$router.currentRoute.query.redirect
-              ? this.$router.currentRoute.query.redirect
-              : "/";
+            let path =
+              this.$router.currentRoute.query.redirect ||
+              this.$router.currentRoute.query.loginToPage ||
+              "/";
+            console.log(path, user);
             this.$router.push(path);
           } else {
             this.$message.error("用户名或密码错误!");
@@ -219,10 +249,10 @@ export default {
         this.allowRun = false;
         var res = true,
           error = "",
-          admin = form2.order == "yuwan",
+          admin = form2.order == this.order.get(),
           userList = this.$storage.get("userList") || [],
           adminList = this.$storage.get("adminList") || [];
-
+        console.log(this.order.get());
         if (form2.name == "Genius淼") {
           res = false;
           error = "Genius淼是管理员名称,请更换名称!";
@@ -232,7 +262,7 @@ export default {
               res = false;
               error = `${
                 admin
-                  ? "尊敬的" + form2.name + ",该名称已经存在,请更换名称..."
+                  ? "尊敬的管理员," + form2.name + "已经存在,请更换名称..."
                   : form2.name + "已存在,请更换名称!"
               }`;
               break;
@@ -244,7 +274,7 @@ export default {
                 res = false;
                 error = `${
                   admin
-                    ? "尊敬的" + form2.name + ",该名称已经存在,请更换名称..."
+                    ? "尊敬的管理员," + form2.name + "已经存在,请更换名称..."
                     : form2.name + "已存在,请更换名称!"
                 }`;
                 break;
@@ -255,30 +285,41 @@ export default {
 
         setTimeout(() => {
           if (res) {
-            let list = admin ? adminList : userList;
-            form2.order = admin ? "yuwan" : "";
             this.form.name = form2.name;
             this.form.password = form2.password;
-            list.push({
-              name: form2.name,
-              password: form2.password,
-              order: form2.order
-            });
-            this.$storage.set(admin ? "adminList" : "userList", list);
-            this.order = "login";
-            this.$message.success(
-              admin
-                ? "成功注册尊敬的管理员:" + form2.name
-                : "成功注册用户:" + form2.name
-            );
+
+            if (admin) {
+              adminList.push({
+                id: adminList.length,
+                name: form2.name,
+                password: form2.password,
+                order: this.order.get(),
+                msg: { name: form2.name }
+              });
+              this.$storage.set("adminList", adminList);
+              this.box = "login";
+              this.$message.success("成功注册尊敬的管理员:" + form2.name);
+              console.log("成功注册管理员");
+            } else {
+              userList.push({
+                id: userList.length,
+                name: form2.name,
+                password: form2.password,
+                order: "",
+                msg: { name: form2.name }
+              });
+              this.$storage.set("userList", userList);
+              this.box = "login";
+              this.$message.success("成功注册用户:" + form2.name);
+              console.log("成功注册用户");
+            }
+
             this.form2 = {
               name: "",
               password: "",
               comfirm: "",
               order: ""
             };
-            console.log(admin ? "成功注册管理员" : "成功注册用户");
-            console.log(list);
           } else {
             this.$message.error(error);
           }
@@ -289,7 +330,11 @@ export default {
     }
   },
   mounted() {
+    console.log(this.order.get(), "(一分钟内有效)");
+    // this.admin.order = this.order.get()
+    // this.$storage.set("adminList", [this.admin]);
     if (!this.$storage.get("adminList")) {
+      this.admin.order = this.order.get();
       this.$storage.set("adminList", [this.admin]);
     }
 
@@ -327,7 +372,7 @@ $shadowColor: rgb(255, 231, 164);
   background-size: 100% 100%;
 
   .box {
-    opacity: 0;
+    opacity: 0.7;
     flex: 0.3;
     border: 1px solid $borderColor;
     box-shadow: 0 0 3px $shadowColor;
@@ -370,11 +415,11 @@ $shadowColor: rgb(255, 231, 164);
               border-color: $borderColor;
               &:focus {
                 border-color: $borderDeepColor;
-                box-shadow: 0 0 20px $shadowColor;
+                box-shadow: 0 0 10px $shadowColor;
               }
               &:hover {
                 border-color: $borderDeepColor;
-                border-width: 1.5px;
+                // border-width: 1.5px;
               }
             }
           }
@@ -408,12 +453,16 @@ $shadowColor: rgb(255, 231, 164);
           }
         }
 
-        .regist {
+        .regist-btn,
+        .jump-btn {
           color: rgba($color: $textColor, $alpha: 0.8);
           opacity: 0.7;
           &:hover {
             opacity: 1;
           }
+        }
+        .jump-btn {
+          float: right;
         }
       }
     }
