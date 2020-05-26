@@ -498,6 +498,7 @@ $contentWidth: 60%;
             padding-left: 0;
             border: 1px solid #ebeef5;
             border-radius: 5px;
+            background-color: #fff;
 
             &:hover {
               border: 1px solid rgba($color: $focusColor, $alpha: 0.5);

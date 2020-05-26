@@ -12,6 +12,7 @@ import storage from '@/model/storage.js'
 import {
 	loading
 } from '@/model/loading'
+import date from "@/model/date.js"
 
 Vue.use(ElementUI)
 Vue.use(loading);
@@ -19,6 +20,7 @@ Vue.use(loading);
 Vue.config.productionTip = false
 Vue.prototype.$storage = storage;
 Vue.prototype.$eventHub = new Vue();
+Vue.prototype.$date = date;
 
 /* eslint-disable no-new */
 new Vue({
