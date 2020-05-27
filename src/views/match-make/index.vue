@@ -1,16 +1,13 @@
 <template>
-  <el-row :gutter="10" class="mm" type="flex" justify="center">
-    <el-col :xs="6" :sm="6" :md="4" :lg="4" :xl="3" class="col-aside">
-      <div class="list">
-        <mm-aside></mm-aside>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :md="14" :lg="14" :xl="15">
-      <div class="content">
-        <router-view />
-      </div>
-    </el-col>
-  </el-row>
+  <div class="mm">
+    <mm-aside class="list"></mm-aside>
+
+    <router-view class="content" />
+  </div>
+  <!-- <el-row :gutter="10" class="mm" type="flex" justify="center">
+    <el-col :xs="6" :sm="6" :md="4" :lg="4" :xl="3" class="col-aside"></el-col>
+    <el-col :xs="12" :sm="12" :md="14" :lg="14" :xl="15"></el-col>
+  </el-row>-->
 </template>
 
 <script>
@@ -52,19 +49,23 @@ export default {
 <style lang="scss" scoped>
 .mm {
   text-align: left;
+  width: 80%;
+  padding: 20px;
+  margin: 0 auto;
 
   .col-aside {
     height: 100%;
   }
 
   .list {
-    padding-top: 20px;
+    width: 30%;
+    float: left;
   }
 
   .content {
-    height: 100%;
-    width: 100%;
-    padding: 20px;
+    width: calc(70% - 21px);
+    margin-left: 20px;
+    display: inline-block;
   }
 }
 </style>

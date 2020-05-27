@@ -1,10 +1,10 @@
 <template>
-  <div class="news" :style="{height:screenHeight-60+'px'}">
+  <div class="news">
     <div class="header">
       <div class="bd">
-        <el-input placeholder="百度一下" v-model="search" @keyup.enter.native="showBd=true;wd=search;">
+        <el-input placeholder="百度一下" v-model="search" @keyup.enter.native="searchClick">
           <template slot="append">
-            <el-button @click="showBd=true;wd=search;">搜索</el-button>
+            <el-button @click="searchClick">搜索</el-button>
           </template>
         </el-input>
       </div>
@@ -18,16 +18,17 @@
         </div>
       </div>
     </div>
-
-    <div class="bd-content" v-if="showBd">
+    <!-- :style="{height:screenHeight-60-30-40-24*2-1+80+'px'}" -->
+    <div class="bd-content" v-if="showBd" :style="{height:screenHeight-60-30-40-24*2-1+80+'px'}">
       <iframe
+        id="iframe"
         :src="`https://www.baidu.com/s?&wd=${wd}&ie=utf-8`"
-        width="80%"
-        height="600px"
         frameborder="0"
+        width="100%"
+        height="100%"
       ></iframe>
 
-      <div class="cover"></div>
+      <!-- <div class="cover"></div> -->
     </div>
   </div>
 </template>
@@ -49,6 +50,7 @@ export default {
       wd: "",
       showBd: false,
       screenHeight: "",
+      bdHeight: "",
       news: [
         {
           title: "奶茶、咖啡、甜品和它们的神仙联名，搞定你的胃还要掏空你的钱包",
@@ -102,6 +104,12 @@ export default {
       ]
     };
   },
+  methods: {
+    searchClick() {
+      this.showBd = true;
+      this.wd = this.search;
+    }
+  },
   mounted() {
     this.screenHeight = document.body.offsetHeight;
   }
@@ -112,21 +120,21 @@ export default {
 .news {
   position: relative;
   // overflow: hidden;
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 30px;
 
   .header {
     position: relative;
     z-index: 2;
     background-color: #fffffb;
+
     .bd {
-      width: 80%;
-      display: inline-block;
-      margin-top: 30px;
+      // display: inline-block;
     }
     .text {
-      width: 80%;
       display: inline-block;
       text-align: left;
-
       a {
         color: royalblue;
         &:focus,
@@ -137,11 +145,8 @@ export default {
     }
   }
   .bd-content {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 38px;
-    text-align: center;
+    margin-top: -80px;
+    height: 2150px;
 
     .cover {
       height: 85px;

@@ -487,7 +487,7 @@ $contentWidth: 60%;
           .title {
             margin-bottom: 10px;
             .el-input__inner {
-              &:hover {
+              &:hover,&:focus {
                 border: 1px solid rgba($color: $focusColor, $alpha: 0.5);
                 box-shadow: 0 0 1.5px $focusColor;
               }
@@ -506,6 +506,7 @@ $contentWidth: 60%;
             }
 
             .text {
+              position: unset; // 让字数限制显示在下面
               margin-bottom: 10px;
               /deep/ .el-textarea__inner {
                 border: none;

@@ -75,7 +75,16 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="success" @click="reset">再来提一下</el-button>
+        <el-popconfirm
+          title="这将删除之前的反馈，继续吗？"
+          @onCancel="reset"
+          cancelButtonText="继续"
+          cancelButtonType="warning"
+          confirmButtonText="取消"
+          confirmButtonType
+        >
+          <el-button slot="reference" type="success">再来提一下</el-button>
+        </el-popconfirm>
       </el-form-item>
     </el-form>
   </div>
@@ -165,7 +174,7 @@ export default {
         }, 500);
       }
     },
-    refresh(notify) {
+    refresh() {
       let ideas = this.adminList[0].ideas;
       let idea = this.getListIndex(ideas, "userId", this.user.id).item;
       if (idea.replyText) {
@@ -173,25 +182,28 @@ export default {
         this.res.replyText = idea.replyText;
         this.status = 3;
       } else {
-        if (notify != false) {
-          this.$notify({
-            title: "通知",
-            message: "稍安勿躁，作者还在回复的路上...",
-            type: "info"
-          });
-        }
+        this.$notify({
+          title: "通知",
+          message: "稍安勿躁，作者还在回复的路上...",
+          type: "info"
+        });
       }
     },
     initStatus() {
       let ideas = this.adminList[0].ideas || [];
       let idea = this.getListIndex(ideas, "userId", this.user.id).item;
-      if (idea) this.refresh(false);
-      else this.status = 1;
+      if (idea) {
+        if (idea.replyText) {
+          this.res.rate = idea.rate;
+          this.res.replyText = idea.replyText;
+          this.status = 3;
+        } else this.status = 2;
+      } else this.status = 1;
     },
     // [{k:v},]
     getListIndex(list, k, v) {
       for (let i = 0; i < list.length; i++) {
-        if (list[i][k] == v) {
+        if (list[i][k] == v + "") {
           return { index: i, val: v, item: list[i] };
         }
       }

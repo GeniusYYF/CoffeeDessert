@@ -7,14 +7,20 @@
 
       <el-form ref="form" :model="form" label-width="100px" label-suffix=":" size="small">
         <el-form-item label="用户名">
-          <el-input v-model="form.name" clearable>
+          <el-input v-model="form.name" clearable @keyup.enter.native="submitForm()">
             <template>
               <span slot="prefix" class="user-icon"></span>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="form.password" type="password" show-password clearable>
+          <el-input
+            v-model="form.password"
+            type="password"
+            show-password
+            clearable
+            @keyup.enter.native="submitForm()"
+          >
             <span slot="prefix" class="pwd-icon"></span>
           </el-input>
         </el-form-item>
@@ -43,22 +49,36 @@
 
       <el-form ref="form2" :model="form2" label-width="120px" label-suffix=":" size="small">
         <el-form-item label="用户名">
-          <el-input v-model="form2.name" clearable>
-            <template>
-            </template>
+          <el-input v-model="form2.name" clearable @keyup.enter.native="regist()">
+            <template></template>
           </el-input>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="form2.password" type="password" show-password clearable>
-          </el-input>
+          <el-input
+            v-model="form2.password"
+            type="password"
+            show-password
+            clearable
+            @keyup.enter.native="regist()"
+          ></el-input>
         </el-form-item>
         <el-form-item label="确认密码">
-          <el-input v-model="form2.comfirm" type="password" show-password clearable>
-          </el-input>
+          <el-input
+            v-model="form2.comfirm"
+            type="password"
+            show-password
+            clearable
+            @keyup.enter.native="regist()"
+          ></el-input>
         </el-form-item>
         <el-form-item label="口令(选)">
-          <el-input v-model="form2.order" type="password" show-password clearable>
-          </el-input>
+          <el-input
+            v-model="form2.order"
+            type="password"
+            show-password
+            clearable
+            @keyup.enter.native="regist()"
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <span slot="label">
@@ -102,7 +122,15 @@ export default {
         id: "0",
         name: "Genius淼",
         password: "739416541",
-        order: ""
+        order: "",
+        msg: {
+          name: "Genius淼",
+          headImg: "man",
+          age: "23",
+          sex: "0",
+          sign: "我是管理员哦~",
+          tags: ["管理员"]
+        }
       },
       allowRun: true,
       box: "login",

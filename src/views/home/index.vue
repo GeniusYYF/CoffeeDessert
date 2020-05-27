@@ -89,22 +89,22 @@ export default {
       screenHeight: "",
       unload: { model1: true },
       imgList: [
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model",
-        "model"
+        // "model"
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model",
+        // "model"
       ]
     };
   },

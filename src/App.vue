@@ -147,9 +147,9 @@ body {
   overflow: auto;
 }
 
-::-webkit-scrollbar {
-  display: none; /* Chrome Safari */
-}
+// ::-webkit-scrollbar {
+//   display: none; /* Chrome Safari */
+// }
 
 .el-menu--horizontal {
   .el-menu {
@@ -165,4 +165,29 @@ body {
     }
   }
 }
+// 滚动条样式
+#app::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(255, 145, 0, 0.986);
+  background-color: #f5f5f5;
+}
+
+#app::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f5f5f5;
+}
+
+#app::-webkit-scrollbar-thumb {
+  background-color: #f90;
+  background-image: -webkit-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
+    transparent 75%,
+    transparent
+  );
+}
+
 </style>
