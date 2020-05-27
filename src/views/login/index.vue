@@ -127,7 +127,7 @@ export default {
           name: "Genius淼",
           headImg: "man",
           age: "23",
-          sex: "0",
+          sex: "男",
           sign: "我是管理员哦~",
           tags: ["管理员"]
         }
@@ -220,7 +220,7 @@ export default {
             let user = admin ? adminList[index] : userList[index];
             this.token["stamp"] = Date.now() + Number(this.token.valid) * 1000;
             user.token = this.token;
-            this.$storage.set("user", user);
+            this.$session.set("user", user);
             // 此时要判断/login的参数，若无参数，进入主页；若有参数则参数为未有权限的那个路由，跳转到那个路由
             let path =
               this.$router.currentRoute.query.redirect ||
@@ -312,7 +312,14 @@ export default {
                 name: form2.name,
                 password: form2.password,
                 order: this.order.get(),
-                msg: { name: form2.name }
+                msg: {
+                  name: form2.name,
+                  age: "",
+                  sex: "未知",
+                  sign: "",
+                  tags: [],
+                  headImg: "man"
+                }
               });
               this.$storage.set("adminList", adminList);
               this.box = "login";
@@ -324,7 +331,14 @@ export default {
                 name: form2.name,
                 password: form2.password,
                 order: "",
-                msg: { name: form2.name }
+                msg: {
+                  name: form2.name,
+                  age: "",
+                  sex: "未知",
+                  sign: "",
+                  tags: [],
+                  headImg: "man"
+                }
               });
               this.$storage.set("userList", userList);
               this.box = "login";
@@ -356,7 +370,7 @@ export default {
       this.$storage.set("adminList", [this.admin]);
     }
 
-    if ((this.$storage.get("user") || {}).token) {
+    if ((this.$session.get("user") || {}).token) {
       this.$router.push("/index");
     }
     if (this.$router.currentRoute.query.redirect) {

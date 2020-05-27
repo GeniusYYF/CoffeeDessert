@@ -34,6 +34,9 @@ export default {
       this.$refs.header.activeIndex = this.$route.path.slice(1);
       console.log(this.$route);
     }
+  },
+  mounted() {
+    this.$store.dispatch("init");
   }
 };
 </script>

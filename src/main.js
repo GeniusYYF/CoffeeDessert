@@ -7,7 +7,9 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import storage from '@/model/storage.js'
+import storage from '@/storage'
+import store from '@/store'
+import session from "@/session"
 // 自定义loading
 import {
 	loading
@@ -19,6 +21,7 @@ Vue.use(loading);
 
 Vue.config.productionTip = false
 Vue.prototype.$storage = storage;
+Vue.prototype.$session = session;
 Vue.prototype.$eventHub = new Vue();
 Vue.prototype.$date = date;
 
@@ -26,8 +29,11 @@ Vue.prototype.$date = date;
 new Vue({
 	el: '#app',
 	router,
+	store,
 	components: {
 		App
 	},
 	template: '<App/>'
 })
+
+

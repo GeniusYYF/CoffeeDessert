@@ -68,7 +68,7 @@ export default {
     },
     quit() {
       this.$eventHub.$emit("loading", true);
-      this.$storage.remove("user");
+      this.$session.remove("user");
 
       setTimeout(() => {
         this.$eventHub.$emit("loading", false);
@@ -78,7 +78,7 @@ export default {
   },
   mounted() {
     // localStorage.clear()
-    this.user = this.$storage.get("user");
+    this.user = this.$session.get("user");
     this.img = this.user.msg.headImg;
     console.log(this.user, this.user.msg.headImg);
     this.$eventHub.$on("headImg", val => {

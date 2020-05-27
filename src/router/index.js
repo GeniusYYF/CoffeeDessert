@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import storage from '@/model/storage.js'
+import storage from '@/storage'
+import session from "@/session"
 
 import CoffeeDessert from '@/coffee-dessert/index'
 
@@ -135,7 +136,7 @@ router.beforeEach((to, from, next) => {
 	// 默认requiresAuth为false才不需要登录，其他都要
 	if (to.meta.requireAuth || to.meta.requireAuth == undefined) {
 		console.log("校验token")
-		let user = storage.get('user') || null
+		let user = session.get('user') || null
 		if (user ? user.token : false) {
 			console.log("有token", user)
 			let stamp = user.token.stamp
@@ -144,7 +145,7 @@ router.beforeEach((to, from, next) => {
 				next();
 				return
 			} else
-				storage.remove('user')
+			session.remove('user')
 		}
 		next({
 			path: "/login",

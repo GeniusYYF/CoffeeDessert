@@ -17,7 +17,7 @@
         <el-timeline-item
           v-for="(item,i) in ideas"
           :key="i"
-          :timestamp="$date.format(item.stamp)"
+          :timestamp="$date.format(item.stamp)+' '+$date.dateDiff(item.stamp)"
           placement="top"
         >
           <el-card shadow="hover">
@@ -89,7 +89,7 @@
 export default {
   data() {
     return {
-      reverse: false,
+      reverse: true,
       ideas: [],
       noIdeas: false,
       replyText: ""

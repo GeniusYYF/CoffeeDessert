@@ -20,6 +20,7 @@ export default {
     };
   },
   mounted() {
+
     this.$eventHub.$on("loading", loading => {
       this.loading = loading;
     });
@@ -189,5 +190,4 @@ body {
     transparent
   );
 }
-
 </style>

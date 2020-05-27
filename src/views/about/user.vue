@@ -175,8 +175,9 @@ export default {
       }
     },
     refresh() {
-      let ideas = this.adminList[0].ideas;
+      let ideas = this.$storage.get("adminList")[0].ideas;
       let idea = this.getListIndex(ideas, "userId", this.user.id).item;
+      console.log("刷新结果：",idea)
       if (idea.replyText) {
         this.res.rate = idea.rate;
         this.res.replyText = idea.replyText;
@@ -192,6 +193,7 @@ export default {
     initStatus() {
       let ideas = this.adminList[0].ideas || [];
       let idea = this.getListIndex(ideas, "userId", this.user.id).item;
+      console.log(idea)
       if (idea) {
         if (idea.replyText) {
           this.res.rate = idea.rate;
@@ -226,7 +228,7 @@ export default {
   },
   mounted() {
     this.adminList = this.$storage.get("adminList");
-    this.user = this.$storage.get("user");
+    this.user = this.$session.get("user");
     this.initStatus();
     console.log(this.adminList);
   }

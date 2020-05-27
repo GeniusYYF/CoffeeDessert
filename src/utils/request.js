@@ -1,5 +1,5 @@
 import axios from 'axios'
-import storage from '@/model/storage.js'
+import storage from '@/storage'
 
 // create an axios instance
 const service = axios.create({

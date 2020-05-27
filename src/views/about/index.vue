@@ -17,9 +17,9 @@ export default {
     };
   },
   mounted() {
-    if (this.$storage.get("user").name == "Genius淼") this.com = "admin";
+    if (this.$session.get("user").name == "Genius淼") this.com = "admin";
     else this.com = "user";
-    console.log(this.com);
+    console.log(new Date(Date.now()).toLocaleString());
   }
 };
 </script>
