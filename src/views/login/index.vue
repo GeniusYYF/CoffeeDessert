@@ -6,9 +6,6 @@
       </div>
 
       <el-form ref="form" :model="form" label-width="100px" label-suffix=":" size="small">
-        <!-- <el-form-item label="机构代码">
-          <el-input v-model="form.code"></el-input>
-        </el-form-item>-->
         <el-form-item label="用户名">
           <el-input v-model="form.name" clearable>
             <template>
@@ -45,29 +42,22 @@
       </div>
 
       <el-form ref="form2" :model="form2" label-width="120px" label-suffix=":" size="small">
-        <!-- <el-form-item label="机构代码">
-          <el-input v-model="form.code"></el-input>
-        </el-form-item>-->
         <el-form-item label="用户名">
           <el-input v-model="form2.name" clearable>
             <template>
-              <!-- <span slot="prefix" class="user-icon"></span> -->
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="form2.password" type="password" show-password clearable>
-            <!-- <span slot="prefix" class="pwd-icon"></span> -->
           </el-input>
         </el-form-item>
         <el-form-item label="确认密码">
           <el-input v-model="form2.comfirm" type="password" show-password clearable>
-            <!-- <span slot="prefix" class="pwd-icon"></span> -->
           </el-input>
         </el-form-item>
         <el-form-item label="口令(选)">
           <el-input v-model="form2.order" type="password" show-password clearable>
-            <!-- <span slot="prefix" class="pwd-icon"></span> -->
           </el-input>
         </el-form-item>
         <el-form-item>
