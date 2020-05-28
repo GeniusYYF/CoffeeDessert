@@ -31,8 +31,8 @@ export default {
   },
   methods: {
     updateRoute() {
-      this.$refs.header.activeIndex = this.$route.path.slice(1);
-      console.log(this.$route);
+      this.$refs.header.activeIndex = this.$route.meta.headActive
+      console.log(this.$route.meta,this.$route.meta.headActive);
     }
   },
   mounted() {

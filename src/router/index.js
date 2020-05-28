@@ -28,6 +28,7 @@ const routes = [{
 		component: Home,
 		meta: {
 			requireAuth: false,
+			headActive: "1"
 		}
 	},
 	{
@@ -36,21 +37,24 @@ const routes = [{
 		redirect: '/match-make/match',
 		meta: {
 			requireAuth: false,
+			headActive: "2"
 		},
 		children: [
 			{
 				path: 'match',
 				component: () => import('@/views/match-make/match'),
 				// component: resolve => require(['@/views/match-make/match-content/match.vue'], resolve)
-	meta: {
-		requireAuth: false,
-	}
+				meta: {
+					requireAuth: false,
+					headActive: "2"
+				}
 			},
 			{
 				path: 'make-use',
 				component: () => import('@/views/match-make/make-content/use'),
 				meta: {
 					requireAuth: false,
+					headActive: "2"
 				}
 			},
 			{
@@ -58,6 +62,7 @@ const routes = [{
 				component: () => import('@/views/match-make/make-content/case'),
 				meta: {
 					requireAuth: false,
+					headActive: "2"
 				}
 			},
 			{
@@ -65,6 +70,7 @@ const routes = [{
 				component: () => import('@/views/match-make/make-content/analyse'),
 				meta: {
 					requireAuth: false,
+					headActive: "2"
 				}
 			},
 			{
@@ -72,6 +78,7 @@ const routes = [{
 				component: () => import('@/views/match-make/state'),
 				meta: {
 					requireAuth: false,
+					headActive: "2"
 				}
 			},
 			{
@@ -79,6 +86,7 @@ const routes = [{
 				component: () => import('@/views/match-make/goodbad'),
 				meta: {
 					requireAuth: false,
+					headActive: "2"
 				}
 			}
 		]
@@ -88,15 +96,22 @@ const routes = [{
 		component: News,
 		meta: {
 			requireAuth: false,
+			headActive:"3"
 		}
 	},
 	{
 		path: '/discuss',
-		component: Discuss
+		component: Discuss,
+		meta: {
+			headActive: "4"
+		}
 	},
 	{
 		path: '/about',
-		component: About
+		component: About,
+		meta: {
+			headActive: "5"
+		}
 	},
 	{
 		path: '/regist-face',
@@ -145,7 +160,7 @@ router.beforeEach((to, from, next) => {
 				next();
 				return
 			} else
-			session.remove('user')
+				session.remove('user')
 		}
 		next({
 			path: "/login",

@@ -15,8 +15,8 @@ export default {
             year = yearList[0] + ymd[0] + yearList[1] + ymd[1] + yearList[2] + ymd[2],
             time = date.split(" ")[1],
 
-            half = time.slice(0, 2) == "下午" ? 12 : 0,
-            half = time.slice(0, 2) == "下午" && time.slice(2, 4) == 12 ? -12 : half,
+            half = time.slice(0, 2) == "下午" && time.slice(2, 4) != '12' ? 12 : 0,
+            half = time.slice(0, 2) == "上午" && time.slice(2, 4) == '12' ? -12 : 0,
             timeList = time.slice(2).split(':'),
             time = parseInt(timeList[0]) + half + hms[0] + timeList[1] + hms[1] + timeList[2] + hms[2];
         return year + " " + time

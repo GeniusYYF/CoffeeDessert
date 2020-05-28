@@ -86,6 +86,7 @@ export default {
       font-size: 40px;
       color: rgb(100, 100, 100);
       border: 1px solid rgb(100, 100, 100);
+      background-color: rgb(237,237,237);
       border-left: none;
       padding: 15px;
       border-radius: 20px;
@@ -106,11 +107,11 @@ export default {
         width: 0;
         height: 0;
         content: "";
-        border: 52px solid rgba(252,252,252,0.9);
+        border: 51px solid rgba(252,252,252,0.9);
         position: absolute;
         border-color: transparent rgba(252,252,252,0.9) transparent transparent;
-        left: -103px;
-         top: 15px;
+        left: -102px;
+         top: 16px;
       }
     }
   }
