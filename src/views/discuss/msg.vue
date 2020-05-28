@@ -115,7 +115,7 @@ export default {
 
       this.$store.commit("setUserList");
       this.edit = false;
-      this.msgCache = JSON.parse(JSON.stringify(this.user));
+      this.userCache = JSON.parse(JSON.stringify(this.user));
 
       this.$message.success("保存成功！");
     },
@@ -123,7 +123,6 @@ export default {
       this.edit = false;
       let msg1 = this.user.msg,
         msg2 = this.userCache.msg;
-      console.log(this.user.msg, this.user.msg.length);
       // this.user = JSON.parse(JSON.stringify(this.userCache));
 
       // msg1.name = msg2.name;

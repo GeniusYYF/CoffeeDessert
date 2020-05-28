@@ -1,6 +1,6 @@
 <template>
   <div class="admin">
-    <div v-if="noIdeas" class="noIdeas">
+    <div v-if="noIdeas" class="no-ideas">
       <img src="./img/drink.gif" />
       <div class="text">暂时还没有反馈呢<br/>喝杯Coffee压压惊</div>
     </div>
@@ -164,7 +164,7 @@ export default {
     }
   }
 
-  .noIdeas {
+  .no-ideas {
     align-items: center;
     justify-content: center;
     display: flex;

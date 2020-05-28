@@ -90,7 +90,7 @@ export default {
       var reader = new FileReader();
       //转base64
       reader.onload = e => {
-        // console.log(e.target.result);
+        console.log(e.target.result);
         //将图片路径赋值给src
         this.speak.imgList.push({
           uid: file.uid,
@@ -102,7 +102,7 @@ export default {
       };
       reader.readAsDataURL(file);
 
-      console.log("存入:", this.speak.imgList, reader);
+      console.log("存入:", this.speak.imgList);
     },
 
     // 上传之前 X

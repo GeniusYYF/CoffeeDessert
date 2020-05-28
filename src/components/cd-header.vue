@@ -79,13 +79,11 @@ export default {
   mounted() {
     // localStorage.clear()
     this.user = this.$session.get("user");
-    this.img = this.user.msg.headImg;
-    console.log(this.user, this.user.msg.headImg);
+    if (this.user) this.img = this.user.msg.headImg;
     this.$eventHub.$on("headImg", val => {
       console.log(val);
       this.img = val;
     });
-    
   }
 };
 </script>

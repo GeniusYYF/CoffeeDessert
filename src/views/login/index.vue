@@ -132,6 +132,24 @@ export default {
           tags: ["管理员"]
         }
       },
+      speaks: [
+        {
+          speakId: "0",
+          name: "Genius淼",
+          headImg: "man",
+          stamp: this.$date.format(Date.now()),
+          diff: this.$date.dateDiff(Date.now()),
+          text: "欢迎欢迎......",
+          imgs: [],
+          tags: ["管理员"],
+          like: 0,
+          speak: 0,
+          transmit: 0,
+          reply: [
+            { headImg: "", name: "", userId: "", text: "", stamp: "", diff: "" }
+          ]
+        }
+      ],
       allowRun: true,
       box: "login",
       token: { order: "***", valid: "3600" },
@@ -366,7 +384,9 @@ export default {
     // this.admin.order = this.order.get()
     // this.$storage.set("adminList", [this.admin]);
     if (!this.$storage.get("adminList")) {
-      this.admin.order = this.order.get();
+      this.admin.order = this.order.get(); // 给口令
+      // 给默认动态
+      this.admin.speaks = this.speaks;
       this.$storage.set("adminList", [this.admin]);
     }
 

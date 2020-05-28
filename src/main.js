@@ -13,7 +13,7 @@ import session from "@/session"
 // 自定义loading
 import {
 	loading
-} from '@/model/loading'
+} from '@/model/loadingText'
 import date from "@/model/date.js"
 
 Vue.use(ElementUI)

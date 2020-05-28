@@ -123,6 +123,11 @@ $contentWidth: 60%;
     width: 100%;
     z-index: -2;
   }
+  /deep/ .el-tabs__header{
+    margin: 0;
+    padding-bottom: 15px;
+  }
+  
   .personal-wrapper {
     background-color: rgba($color: $bgColor, $alpha: 0.8);
     .personal-msg {
