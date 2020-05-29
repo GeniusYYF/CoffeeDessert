@@ -8,40 +8,46 @@
         </div>
         <div class="right">
           <span class="name">{{item.name}}</span>
-          <span class="diff">&nbsp;&nbsp;&nbsp;{{item.diff}}</span>
+          <span class="diff">&nbsp;&nbsp;&nbsp;{{$date.dateDiff(item.stamp)}}</span>
           <br />
-          <span class="stamp">{{item.stamp}}</span>
+          <span class="stamp">{{$date.format(item.stamp)}}</span>
         </div>
       </div>
       <div class="content">
         <div class="text">{{item.text}}</div>
         <div class="imgs">
-          <el-upload
-            action="#"
-            :auto-upload="false"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :file-list="fileList"
+          <img
+            v-for="(src,i) in item.imgList"
+            :key="i"
+            :src="src.url?require(src.url+''):src.data"
+            @click="showBigImg(src)"
+            :class="{count1:item.imgList.length==1,count2:item.imgList.length==2,count3:item.imgList.length>=3}"
+            alt
+          />
+          <el-dialog
+            :visible.sync="bigImg.visible"
+            :show-close="false"
+            :title="bigImg.name"
+            class="big-img"
           >
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
-              <img class="el-upload-list__item-thumbnail" :src="file.url" alt />
-              <span class="el-upload-list__item-actions">
-                <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-                  <i class="el-icon-zoom-in"></i>
-                </span>
+            <div class="img-msg">
+              <span class="type">
+                类型：
+                <span>{{bigImg.type}}</span>
+              </span>
+              <span class="size">
+                大小：
+                <span>{{bigImg.size}}</span>
               </span>
             </div>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt />
+            <img width="100%" :src="bigImg.url" alt />
           </el-dialog>
         </div>
       </div>
       <div class="foot">
         <div class="left">
           <span class="tag" v-for="(tag,i) in item.tags" :key="i">
-            <el-tag v-if="i<3" size="small" :type="randomType()">{{tag}}</el-tag>
+            <el-tag v-if="i<=3 && tag.length<=3" size="small" :type="randomType()">{{tag}}</el-tag>
           </span>
         </div>
         <div class="right">
@@ -70,7 +76,7 @@
         <div v-for="(re,i) in item.reply" :key="i">
           <div class="line">
             <span class="re-name">{{re.name}}</span>&nbsp;
-            <span class="diff">{{item.diff}}</span>&nbsp;回复&nbsp;
+            <span class="diff">{{$date.dateDiff(re.stamp)}}</span>&nbsp;回复&nbsp;
             <span class="name">{{item.name}}</span>：
             <span class="text">{{re.text}}</span>
             &nbsp;&nbsp;&nbsp;
@@ -85,76 +91,38 @@
 export default {
   data() {
     return {
-      dialogImageUrl: "",
-      dialogVisible: false,
-      fileList: [
-        {
-          name: "food.jpeg",
-          url: "./img/man.jpg"
-        },
-        {
-          name: "food2.jpeg",
-          url: ""
-        }
-      ],
+      bigImg: {
+        name: "",
+        type: "",
+        size: "",
+        visible: false,
+        url: ""
+      },
       headImg: { man: "./img/man.jpg", woman: "./img/woman.jpg" },
-      speaks: [
-        {
-          speakId: "0",
-          name: "Genius淼",
-          headImg: "man",
-          stamp: this.$date.format(Date.now()),
-          diff: this.$date.dateDiff(Date.now()),
-          text: "欢迎欢迎......",
-          imgs: [],
-          tags: ["管理员", "作者"],
-          like: 0,
-          speak: 0,
-          transmit: 0,
-          clickLike: false,
-          reply: [
-            {
-              name: "无名氏",
-              userId: "",
-              text:
-                "不错，字数非常的多读都顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶",
-              stamp: "",
-              diff: "刚刚"
-            },
-            {
-              name: "无名氏",
-              userId: "",
-              text:
-                "不错，字数非常的多读都顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶",
-              stamp: "",
-              diff: "刚刚"
-            },
-            {
-              name: "无名氏",
-              userId: "",
-              text:
-                "不错，字数非常的多读都顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶",
-              stamp: "",
-              diff: "刚刚"
-            }
-          ]
-        }
-      ]
+      speaks: []
     };
   },
   methods: {
     randomType() {
-      // let types =
       return ["", "success", "info", "warning", "danger"][
         Math.floor(Math.random() * (5 - 0)) + 0
       ];
     },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+    showBigImg(item) {
+      let bigImg = this.bigImg;
+      bigImg.name = item.name;
+      bigImg.type = item.type;
+      bigImg.size = item.size;
+      bigImg.url = item.url ? require(item.url + "") : item.data;
+      bigImg.visible = true;
+    },
+    getSpeaks() {
+      this.speaks = this.$store.getters.getSpeaks;
     }
   },
-  mounted() {}
+  mounted() {
+    this.getSpeaks();
+  }
 };
 </script>
 
@@ -186,11 +154,56 @@ export default {
     .content {
       clear: both;
       padding: 15px 0;
-      .text{
+      .text {
         margin-bottom: 10px;
       }
-      .imgs{
-
+      .imgs {
+        .count1,
+        .count2,
+        .count3 {
+          &:hover {
+            cursor: pointer;
+            box-shadow: 0 0 5px rgb(255, 123, 0);
+          }
+        }
+        .count1 {
+          width: 100%;
+        }
+        .count2 {
+          width: 49%;
+          margin-right: 1%;
+        }
+        .count3 {
+          width: 32.3%;
+          margin: 0 1% 1% 0;
+        }
+        .big-img /deep/ {
+          .el-dialog {
+            margin: 1vh auto !important;
+          }
+          .el-dialog__header {
+            padding-bottom: 0;
+          }
+          .el-dialog__body {
+            padding: 0 20px 20px;
+            .img-msg {
+              text-align: right;
+              .type {
+                margin-right: 15px;
+                span {
+                  color: rgb(148, 148, 148);
+                  font-size: 14px;
+                }
+              }
+              .size {
+                span {
+                  color: rgb(148, 148, 148);
+                  font-size: 14px;
+                }
+              }
+            }
+          }
+        }
       }
     }
     .foot {
@@ -203,9 +216,7 @@ export default {
       .right {
         // display: inline-block;
         float: right;
-        .el-button {
-          // margin-left: 0;
-        }
+        margin-right: 1%;
       }
     }
     .reply {

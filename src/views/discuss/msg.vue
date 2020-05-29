@@ -40,6 +40,7 @@
             v-for="tag in user.msg.tags"
             closable
             :disable-transitions="false"
+            :type="randomType()"
             @close="handleClose(tag)"
           >{{tag}}</el-tag>
           <el-input
@@ -108,11 +109,23 @@ export default {
     };
   },
   methods: {
+    // 更新对应的speaks和reply信息
+    updateSR() {
+      let user = this.user;
+      if (user.speaks.length != 0) {
+        user.speaks.forEach(item => {
+          // item.name = user.msg.name;
+          item.headImg = user.msg.headImg;
+          item.tags = user.msg.tags || [];
+        });
+      }
+      return user;
+    },
     saveMsg() {
       this.$eventHub.$emit("headImg", this.user.msg.headImg);
+      this.$store.commit("setUser", this.updateSR());
       console.log(this.$store.state.user, this.user);
-      this.$store.commit("setUser", this.user);
-
+      this.$store.getters.getUser;
       this.$store.commit("setUserList");
       this.edit = false;
       this.userCache = JSON.parse(JSON.stringify(this.user));
@@ -133,7 +146,7 @@ export default {
       msg1.tags = msg2.tags;
     },
     handleClose(tag) {
-      this.user.tags.splice(this.user.tags.indexOf(tag), 1);
+      this.user.msg.tags.splice(this.user.msg.tags.indexOf(tag), 1);
     },
 
     showInput() {
@@ -144,18 +157,32 @@ export default {
     },
 
     handleInputConfirm() {
-      let inputValue = this.inputValue;
-      if (inputValue) {
-        this.user.msg.tags.push(inputValue);
+      let inputValue = this.inputValue,
+        tags = this.user.msg.tags;
+      if (tags.length > 10) {
+        this.$notify({
+          title: "通知",
+          message: "最多贴10个标签，不要贪得无厌哦",
+          type: "warning"
+        });
+      } else if (inputValue && !tags.includes(inputValue)) {
+        tags.push(inputValue);
       }
       this.inputVisible = false;
       this.inputValue = "";
+    },
+    randomType() {
+      return ["", "success", "info", "warning", "danger"][
+        Math.floor(Math.random() * (5 - 0)) + 0
+      ];
     }
   },
   beforeMount() {
     this.user = this.$store.getters.getUser;
-    console.log(this.user);
     this.userCache = JSON.parse(JSON.stringify(this.user));
+  },
+  mounted(){
+        console.log(this.$date.format(1590685028328));
   }
 };
 </script>

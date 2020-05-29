@@ -118,38 +118,7 @@ export default {
         comfirm: "",
         order: ""
       },
-      admin: {
-        id: "0",
-        name: "Genius淼",
-        password: "739416541",
-        order: "",
-        msg: {
-          name: "Genius淼",
-          headImg: "man",
-          age: "23",
-          sex: "男",
-          sign: "我是管理员哦~",
-          tags: ["管理员"]
-        }
-      },
-      speaks: [
-        {
-          speakId: "0",
-          name: "Genius淼",
-          headImg: "man",
-          stamp: this.$date.format(Date.now()),
-          diff: this.$date.dateDiff(Date.now()),
-          text: "欢迎欢迎......",
-          imgs: [],
-          tags: ["管理员"],
-          like: 0,
-          speak: 0,
-          transmit: 0,
-          reply: [
-            { headImg: "", name: "", userId: "", text: "", stamp: "", diff: "" }
-          ]
-        }
-      ],
+
       allowRun: true,
       box: "login",
       token: { order: "***", valid: "3600" },
@@ -238,6 +207,7 @@ export default {
             let user = admin ? adminList[index] : userList[index];
             this.token["stamp"] = Date.now() + Number(this.token.valid) * 1000;
             user.token = this.token;
+           
             this.$session.set("user", user);
             // 此时要判断/login的参数，若无参数，进入主页；若有参数则参数为未有权限的那个路由，跳转到那个路由
             let path =
@@ -337,7 +307,9 @@ export default {
                   sign: "",
                   tags: [],
                   headImg: "man"
-                }
+                },
+                speaks: [],
+                noticeList: []
               });
               this.$storage.set("adminList", adminList);
               this.box = "login";
@@ -356,7 +328,9 @@ export default {
                   sign: "",
                   tags: [],
                   headImg: "man"
-                }
+                },
+                speaks: [],
+                noticeList: []
               });
               this.$storage.set("userList", userList);
               this.box = "login";
@@ -381,14 +355,6 @@ export default {
   },
   mounted() {
     console.log(this.order.get(), "(一分钟内有效)");
-    // this.admin.order = this.order.get()
-    // this.$storage.set("adminList", [this.admin]);
-    if (!this.$storage.get("adminList")) {
-      this.admin.order = this.order.get(); // 给口令
-      // 给默认动态
-      this.admin.speaks = this.speaks;
-      this.$storage.set("adminList", [this.admin]);
-    }
 
     if ((this.$session.get("user") || {}).token) {
       this.$router.push("/index");

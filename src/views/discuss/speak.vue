@@ -1,7 +1,7 @@
 <template>
   <div class="speak">
     <el-card>
-      <el-input class="title" placeholder="标题" v-model="speak.title"></el-input>
+      <!-- <el-input class="title" placeholder="标题" v-model="speak.title"></el-input> -->
 
       <dir class="content">
         <el-input
@@ -17,7 +17,8 @@
 
         <el-upload
           class="upload"
-          action="https://jsonplaceholder.typicode.com/posts/"
+          ref="upload"
+          action="#"
           list-type="picture-card"
           :auto-upload="false"
           :limit="9"
@@ -32,16 +33,25 @@
           :on-progress="onProgress"-->
           <i slot="default" class="el-icon-plus"></i>
         </el-upload>
+        <el-dialog :visible.sync="dialogVisible" :show-close="false" class="big-img">
+          <img width="100%" :src="dialogImageUrl" alt />
+        </el-dialog>
       </dir>
 
       <div class="push-speak">
-        <el-button size="mini" type="warning" @click="pushSpeak">发 布</el-button>
+        <el-popover
+          placement="bottom"
+          title="❕ 提示"
+          width="200"
+          trigger="manual"
+          content="请确保输入了内容哦"
+          v-model="errorPush"
+          @after-enter="autoHide"
+        >
+          <el-button slot="reference" size="mini" type="warning" @click="pushSpeak">发 布</el-button>
+        </el-popover>
       </div>
     </el-card>
-
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt />
-    </el-dialog>
   </div>
 </template>
 
@@ -52,11 +62,39 @@ export default {
       dialogImageUrl: "",
       dialogVisible: false,
       disabled: false,
+      errorPush: false,
       imageUrl: "",
       speak: {
-        title: "",
+        speakId: "",
+        // title: "",
         text: "",
-        imgList: []
+        imgList: [],
+        reply: [],
+        like: 0,
+        speak: 0,
+        transmit: 0,
+        clickLike: false,
+
+        userId: "",
+        name: "",
+        headImg: "",
+        stamp: ""
+      },
+      speakCache: {
+        speakId: "",
+        // title: "",
+        text: "",
+        imgList: [],
+        reply: [],
+        like: 0,
+        speak: 0,
+        transmit: 0,
+        clickLike: false,
+
+        userId: "",
+        name: "",
+        headImg: "",
+        stamp: ""
       }
     };
   },
@@ -88,16 +126,21 @@ export default {
       var event = event || window.event;
       var file = event.target.files[0];
       var reader = new FileReader();
+
       //转base64
       reader.onload = e => {
-        console.log(e.target.result);
+        // console.log(e.target.result);
         //将图片路径赋值给src
         this.speak.imgList.push({
           uid: file.uid,
           name: file.name,
           data: e.target.result,
-          size: file.size,
-          type: file.type
+          size:
+            file.size / 1024 > 1000
+              ? (file.size / 1024 / 1024).toFixed(2) + "MB"
+              : (file.size / 1024).toFixed(2) + "KB",
+          type: file.type,
+          url: ""
         });
       };
       reader.readAsDataURL(file);
@@ -134,13 +177,33 @@ export default {
     },
     // 发布
     pushSpeak() {
+      if (!this.speak.text) {
+        this.errorPush = true;
+        return;
+      }
       this.$eventHub.$emit("loading", true);
-      let data = this.$storage.get("speaks") || {};
-      let user = this.$session.get("user") || { id: "0" };
-      // {user.id:[{},{}...],user.id2:[],...}
-      data[user.id].push(this.speak);
-      this.$storage.set("speaks", data);
-      this.$eventHub.$emit("loading", false);
+      let user = this.$store.getters.getUser;
+      user["speaks"] = user.speaks || [];
+      this.speak.userId = user.id;
+      this.speak.name = user.name;
+      this.speak.headImg = user.headImg || "man";
+      this.speak.stamp = Date.now();
+      user["speaks"].push(this.speak);
+      this.$store.commit("setUser", user);
+      this.$store.commit("setUserList");
+
+      setTimeout(_ => {
+        this.$refs.upload.clearFiles();
+        this.speak = JSON.parse(JSON.stringify(this.speakCache));
+        this.$eventHub.$emit("loading", false);
+        this.$message.success("发布成功！");
+      }, 1500);
+    },
+    autoHide() {
+      if (this.errorPush)
+        setTimeout(_ => {
+          this.errorPush = false;
+        }, 2000);
     }
   }
 };

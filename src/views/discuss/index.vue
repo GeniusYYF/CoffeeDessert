@@ -34,7 +34,11 @@
               ></i>
               <i v-show="user.msg.sex=='女'" class="el-icon-female" style="color:rgb(250, 100, 0)"></i>
               <i v-show="user.msg.sex=='保密'" class="el-icon-lock" style="color:rgb(200, 100, 100)"></i>
-              <i v-show="user.msg.sex=='未知'" class="el-icon-question" style="color:rgb(100, 100, 50)"></i>
+              <i
+                v-show="user.msg.sex=='未知'"
+                class="el-icon-question"
+                style="color:rgb(100, 100, 50)"
+              ></i>
             </h2>
             <div>{{user.msg.sign}}</div>
           </div>
@@ -95,6 +99,10 @@ export default {
   methods: {
     tabClick(tab, event) {
       console.log(tab, event);
+      if (tab.index == 1) {
+        this.$store.commit("setSpeaks");
+        tab.$children[0].getSpeaks()
+      }
     }
   },
   mounted() {
@@ -123,11 +131,11 @@ $contentWidth: 60%;
     width: 100%;
     z-index: -2;
   }
-  /deep/ .el-tabs__header{
+  /deep/ .el-tabs__header {
     margin: 0;
     padding-bottom: 15px;
   }
-  
+
   .personal-wrapper {
     background-color: rgba($color: $bgColor, $alpha: 0.8);
     .personal-msg {
@@ -222,6 +230,17 @@ $contentWidth: 60%;
                 line-height: 100px;
               }
             }
+            .big-img /deep/ {
+              .el-dialog {
+                margin: 1vh auto !important;
+                .el-dialog__header {
+                  padding: 0;
+                }
+                .el-dialog__body {
+                  padding: 20px;
+                }
+              }
+            }
           }
           .push-speak {
             display: inline-block;
@@ -257,6 +276,7 @@ $contentWidth: 60%;
         .tags {
           .el-tag + .el-tag {
             margin-left: 10px;
+            margin-bottom: 10px;
           }
           .button-new-tag {
             margin-left: 10px;
