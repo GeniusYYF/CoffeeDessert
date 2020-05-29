@@ -1,5 +1,5 @@
 <template>
-  <el-menu default-active="match" class="mm-aside" router>
+  <el-menu default-active="match" class="mm-aside" route :default-openeds="['make']">
     <el-menu-item index="match">
       <i class="el-icon-potato-strips"></i>
       <span>咖啡搭配</span>
