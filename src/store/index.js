@@ -159,6 +159,20 @@ const mutations = {
                 noticeList: []
             }]);
         }
+    },
+    addLike(state, { userId, speakId }) {
+        console.log(userId, speakId)
+        state.speaks.forEach((s, i) => {
+            if (s.speakId == speakId) {
+                state.speaks[i].like += 1;
+                console.log(state.speaks[i].like)
+            }
+        })
+        let userList = storage.get('userList')
+        userList[userId].speaks = state.speaks
+
+        storage.set('speaks', state.speaks)
+        storage.set('userList', userList)
     }
 };
 const actions = {

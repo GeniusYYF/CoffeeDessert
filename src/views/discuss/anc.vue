@@ -57,14 +57,14 @@
               type
               size="mini"
               icon="el-icon-star-off"
-              @click="item.clickLike=true;"
+              @click="item.clickLike=true;addLike(item.userId,item.speakId);"
             >喜欢 {{item.like}}</el-button>
             <el-button
               v-show="item.clickLike"
               type
               size="mini"
               icon="el-icon-star-on"
-              @click="item.clickLike=false;"
+              @click="addLike(item.userId,item.speakId);"
             >喜欢 {{item.like}}</el-button>
             <el-button type size="mini" icon="el-icon-chat-line-round">评论 {{item.speak}}</el-button>
             <el-button type size="mini" icon="el-icon-share">转发 {{item.transmit}}</el-button>
@@ -118,6 +118,10 @@ export default {
     },
     getSpeaks() {
       this.speaks = this.$store.getters.getSpeaks;
+    },
+    addLike(userId, speakId) {
+      console.log(userId, speakId);
+      this.$store.commit("addLike", { userId, speakId });
     }
   },
   mounted() {

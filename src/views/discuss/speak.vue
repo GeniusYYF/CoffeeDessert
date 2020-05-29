@@ -185,6 +185,7 @@ export default {
       let user = this.$store.getters.getUser;
       user["speaks"] = user.speaks || [];
       this.speak.userId = user.id;
+      this.speak.speakId = user.speaks.length;
       this.speak.name = user.msg.name;
       this.speak.headImg = user.msg.headImg || "man";
       this.speak.stamp = Date.now();
