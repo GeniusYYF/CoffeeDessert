@@ -123,9 +123,10 @@ export default {
     },
     saveMsg() {
       this.$eventHub.$emit("headImg", this.user.msg.headImg);
-      this.$store.commit("setUser", this.updateSR());
+      this.$store.state.user = this.updateSR();
+      this.$store.commit("setUser");
       console.log(this.$store.state.user, this.user);
-      this.$store.getters.getUser;
+
       this.$store.commit("setUserList");
       this.edit = false;
       this.userCache = JSON.parse(JSON.stringify(this.user));
@@ -181,8 +182,8 @@ export default {
     this.user = this.$store.getters.getUser;
     this.userCache = JSON.parse(JSON.stringify(this.user));
   },
-  mounted(){
-        console.log(this.$date.format(1590685028328));
+  mounted() {
+    console.log(this.$date.format(1590685028328));
   }
 };
 </script>

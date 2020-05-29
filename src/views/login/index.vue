@@ -30,14 +30,14 @@
               type="text"
               class="regist-btn"
               @click="box='regist'"
-            >注册&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+            >注 册&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
           </span>
           <el-button
             type="primary"
             class="login-btn"
             @click="submitForm()"
           >登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</el-button>
-          <el-button type="text" class="jump-btn" @click="$router.push('/')">跳过登录</el-button>
+          <el-button type="text" class="jump-btn" @click="$router.push('/')">👉跳过登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -107,6 +107,7 @@ export default {
   computed: {},
   data() {
     return {
+      loaded: false,
       form: {
         name: "",
         password: "",
@@ -207,7 +208,7 @@ export default {
             let user = admin ? adminList[index] : userList[index];
             this.token["stamp"] = Date.now() + Number(this.token.valid) * 1000;
             user.token = this.token;
-           
+
             this.$session.set("user", user);
             // 此时要判断/login的参数，若无参数，进入主页；若有参数则参数为未有权限的那个路由，跳转到那个路由
             let path =
@@ -355,6 +356,7 @@ export default {
   },
   mounted() {
     console.log(this.order.get(), "(一分钟内有效)");
+    this.loaded = true; // 开始增加样式（动画）
 
     if ((this.$session.get("user") || {}).token) {
       this.$router.push("/index");
@@ -378,31 +380,48 @@ $titleColor: rgb(255, 30, 0);
 $borderColor: rgba(255, 219, 58, 0.5);
 $borderDeepColor: rgba(255, 136, 0, 0.8);
 $shadowColor: rgb(255, 231, 164);
+// ---动画参数---
+$page-duration: 1.5s;
+
 .login {
-  height: 100%;
+  // height: 100%;
+  // width: 100%;
+  position: fixed;
   display: flex;
   //   flex-direction: row;
   justify-content: center;
   align-items: center;
-  // ./img/login.jpg
-  // ../../assets/imgs/mm1.jpg
   background: url("./img/login.jpg") no-repeat;
   background-size: 100% 100%;
+  animation: ease infinite dropdown;
+  animation-duration: 1.5s;
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(1, 1, 1, 1);
+  transition: all 0.1s;
 
   .box {
     opacity: 0.7;
     flex: 0.3;
     border: 1px solid $borderColor;
     box-shadow: 0 0 3px $shadowColor;
-    padding: 20px 50px;
+    padding: 20px 50px 0;
     border-radius: 10px;
     font-family: 楷体;
-    transition: opacity 0.5s;
+    // transition: opacity 0.5s;
     background-color: rgba($color: #fff8f1, $alpha: 1);
+    animation: ease infinite box-rotate;
+    animation-duration: $page-duration;
+    animation-delay: 0;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(1, 1, 1, 1);
+    transition: all 0.1s;
 
     &:hover {
       box-shadow: 0 0 8px $shadowColor;
-      opacity: 0.9;
+      opacity: 0.99;
     }
 
     .title {
@@ -471,8 +490,18 @@ $shadowColor: rgb(255, 231, 164);
           }
         }
 
-        .regist-btn,
+        .regist-btn {
+          font-size: 14px;
+          color: rgba($color: $textColor, $alpha: 0.8);
+          opacity: 0.7;
+          line-height: 2;
+          &:hover {
+            opacity: 1;
+            font-size: 16px;
+          }
+        }
         .jump-btn {
+          font-size: 14px;
           color: rgba($color: $textColor, $alpha: 0.8);
           opacity: 0.7;
           &:hover {
@@ -480,10 +509,62 @@ $shadowColor: rgb(255, 231, 164);
           }
         }
         .jump-btn {
+          margin-top: 10px;
           float: right;
         }
       }
     }
+  }
+}
+// 460 300
+@keyframes dropdown {
+  0% {
+    bottom: 100%;
+    transform: rotate(0);
+    transform-origin: 20% 40%;
+    left: 0;
+  }
+  25% {
+    bottom: 50%;
+    transform: rotate(90deg);
+    left: 25%;
+  }
+  50% {
+    bottom: 0;
+    left: 50%;
+    transform: rotate(180deg);
+  }
+  75% {
+    left: 75%;
+    transform: rotate(270deg);
+    bottom: 200px;
+    width: 460px;
+    height: 300px;
+  }
+  100% {
+    left: 0;
+    transform: rotate(360deg);
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+@keyframes box-rotate {
+  0% {
+    transform: rotate(0);
+    // transform-origin: 20% 40%;
+  }
+  25% {
+    transform: rotate(720deg);
+  }
+  50% {
+    transform: rotate(1080deg);
+  }
+  75% {
+    transform: rotate(1260deg);
+  }
+  100% {
+    transform: rotate(1440deg);
   }
 }
 </style>

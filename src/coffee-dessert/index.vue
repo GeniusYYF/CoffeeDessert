@@ -31,12 +31,16 @@ export default {
   },
   methods: {
     updateRoute() {
-      this.$refs.header.activeIndex = this.$route.meta.headActive
-      console.log(this.$route.meta,this.$route.meta.headActive);
+      this.$refs.header.activeIndex = this.$route.meta.headActive;
+      console.log(this.$route.meta, this.$route.meta.headActive);
     }
   },
   mounted() {
     this.$store.dispatch("init");
+    // 登录和刷新后延时重新渲染
+    setTimeout(() => {
+      this.updateRoute();
+    }, 100);
   }
 };
 </script>

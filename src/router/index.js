@@ -122,6 +122,7 @@ const routes = [{
 		component: NotFound,
 		meta: {
 			requireAuth: false,
+			headActive: "404"
 		}
 	}
 	]

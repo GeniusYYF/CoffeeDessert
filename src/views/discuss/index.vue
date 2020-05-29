@@ -288,7 +288,7 @@ $contentWidth: 60%;
           .input-new-tag {
             width: 90px;
             margin-left: 10px;
-            vertical-align: bottom;
+            // vertical-align: bottom;
           }
         }
 

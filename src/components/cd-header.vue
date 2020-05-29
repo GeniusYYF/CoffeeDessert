@@ -54,7 +54,7 @@ export default {
   name: "CdHeader",
   data() {
     return {
-      activeIndex: "1",
+      activeIndex: "10",
       user: "",
       img: ""
     };

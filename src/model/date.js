@@ -8,15 +8,18 @@ export default {
      * ch - 年份分割符
      */
     format: (v, ymd, hms) => {
-
         var ymd = ymd && ymd.length == 3 ? ymd : ["/", "/", ""], hms = hms && hms.length == 3 ? hms : [":", ":", ""];
         var date = new Date(parseInt(v)).toLocaleString(),
             yearList = date.split(" ")[0].split("/"),
             year = yearList[0] + ymd[0] + yearList[1] + ymd[1] + yearList[2] + ymd[2],
             time = date.split(" ")[1],
+            half = 0;
+        if (time.slice(0, 2) == "下午")
+            half = time.slice(2, 4) == '12' ? -12 : 12;
+        else if (time.slice(0, 2) == "上午")
+            half = 0
 
-            half = time.slice(0, 2) == "下午" && time.slice(2, 4) != '12' ? 12 : 0,
-            half = time.slice(0, 2) == "上午" && time.slice(2, 4) == '12' ? -12 : 0,
+        var
             timeList = time.slice(2).split(':'),
             time = parseInt(timeList[0]) + half + hms[0] + timeList[1] + hms[1] + timeList[2] + hms[2];
         return year + " " + time
