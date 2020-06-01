@@ -16,11 +16,44 @@ export default {
     return {
       loading: false,
       loadingText: "Load...",
-      firstBig: true
+      firstBig: true,
+      dropList: [],
+      faceList: [
+        "😀",
+        "😁",
+        "😂",
+        "🤣",
+        "😃",
+        "😄",
+        "😅",
+        "😆",
+        "😉",
+        "😊",
+        "😋",
+        "😎",
+        "😍",
+        "😘",
+        "😗",
+        "😙",
+        "😚",
+        "🙂",
+        "🤗",
+        "🤩",
+        "🤔",
+        "🤨",
+        "😐",
+        "😑",
+        "😶",
+        "🙄",
+        "😏",
+        "😣",
+        "😥"
+      ],
+      starList: ["☆", "★"],
+      loveList: ["❤", "🧡", "💛", "💙", "💚", "💜", "🖤", "💗"]
     };
   },
   mounted() {
-
     this.$eventHub.$on("loading", loading => {
       this.loading = loading;
     });
@@ -31,44 +64,21 @@ export default {
       this.firstBig = firstBig;
     });
 
-    var faceList = [
-      "😀",
-      "😁",
-      "😂",
-      "🤣",
-      "😃",
-      "😄",
-      "😅",
-      "😆",
-      "😉",
-      "😊",
-      "😋",
-      "😎",
-      "😍",
-      "😘",
-      "😗",
-      "😙",
-      "😚",
-      "🙂",
-      "🤗",
-      "🤩",
-      "🤔",
-      "🤨",
-      "😐",
-      "😑",
-      "😶",
-      "🙄",
-      "😏",
-      "😣",
-      "😥"
-    ];
+    this.$eventHub.$on("dropList", dropList => {
+      if (dropList == "表情") this.dropList = this.faceList;
+      else if (dropList == "五角星") this.dropList = this.starList;
+      else this.dropList = this.loveList;
+    });
 
-    var starList = ["☆", "★"];
-
-    var loveList = ["❤", "🧡", "💛", "💙", "💚", "💜", "🖤", "💗"];
+    if (this.$session.get("user")) {
+      let dropList = this.$session.get("user").msg.dropList;
+      if (dropList == "表情") this.dropList = this.faceList;
+      else if (dropList == "五角星") this.dropList = this.starList;
+      else this.dropList = this.loveList;
+    }
 
     var movePx = 0, //用做记录距上次显示图像后的移动距离px
-      intervalPx = 200, // 超过这个px长度后自动产生一个
+      intervalPx = 100, // 超过这个px长度后自动产生一个
       intervalStars = "", // 定时清空器
       span, // span元素
       time = 8, // 动画时间，清空间隔（*10s）
@@ -87,6 +97,7 @@ export default {
 			}
     	`;
     document.querySelector("head").appendChild(style);
+    this.dropList = this.dropList.length == 0 ? this.loveList : this.dropList;
 
     intervalStars = setInterval(() => {
       if (spans.length > 0) {
@@ -103,7 +114,7 @@ export default {
       if (movePx > intervalPx) {
         span = document.createElement("span");
         spans.push(span);
-        let rand = Math.floor(Math.random() * loveList.length);
+        let rand = Math.floor(Math.random() * this.dropList.length);
 
         span.style.cssText = `
 			position:fixed;
@@ -115,11 +126,35 @@ export default {
 			text-shadow: 2px 2px 2px red;
 			opacity:.5;
 			`;
-        span.innerText = loveList[rand];
+        span.innerText = this.dropList[rand];
         drop.appendChild(span);
         movePx = 0;
       } else movePx++;
     });
+
+    // 人脸登录成功
+    let href = location.href.split("?")[1].split("&"),
+      res = href[0].split("=")[1],
+      username = href[1].split("=")[1];
+    console.log(res, username);
+    if (res == "true" && username) {
+      let userList = this.$storage.get("userList"),
+        adminList = this.$storage.get("adminList");
+      userList.forEach(item => {
+        if (item.name == username) {
+          this.$store.commit("setUser", item);
+          window.location.href = "127.0.0.1:8080/";
+          // location.reload();
+        }
+      });
+      adminList.forEach(item => {
+        if (item.name == username) {
+          this.$store.commit("setUser", item);
+          window.location.href = "127.0.0.1:8080/";
+          // location.reload();
+        }
+      });
+    }
   }
 };
 </script>

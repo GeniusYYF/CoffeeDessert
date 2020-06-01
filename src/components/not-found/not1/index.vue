@@ -49,7 +49,7 @@ export default {
       clearInterval(interval);
     }, 5 * 60 * 1000);
 
-    this.height = document.body.offsetHeight;
+    this.height = document.body.offsetHeight - 1;
     this.width = document.body.offsetWidth;
     console.log(window.screen, document.body);
   }

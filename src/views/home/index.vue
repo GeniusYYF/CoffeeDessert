@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { sign_by_face } from "@/api/face";
 export default {
   name: "",
   data() {
@@ -110,8 +111,9 @@ export default {
   },
   methods: {},
   mounted() {
-    this.screenHeight = document.body.offsetHeight;
+    this.screenHeight = document.body.offsetHeight - 1;
     this.unload.model1 = false;
+   
   }
 };
 </script>

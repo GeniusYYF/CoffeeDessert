@@ -37,7 +37,35 @@
             class="login-btn"
             @click="submitForm()"
           >登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</el-button>
+
           <el-button type="text" class="jump-btn" @click="$router.push('/')">👉跳过登录</el-button>
+
+          <el-popover
+            v-model="face.visible"
+            placement="bottom"
+            title="请输入用户名"
+            width="200"
+            trigger="manual"
+          >
+            <el-button
+              slot="reference"
+              type="text"
+              class="jump-btn"
+              @click="face.visible=true"
+            >👉人脸登录</el-button>
+            <span slot>
+              <el-input v-model="face.name"></el-input>
+              <div style="padding-top:10px">
+                <el-button
+                  size="mini"
+                  type="warning"
+                  plain
+                  @click="face.visible=false;loginFace()"
+                >确 认</el-button>
+                <el-button size="mini" @click="face.visible=false">取 消</el-button>
+              </div>
+            </span>
+          </el-popover>
         </el-form-item>
       </el-form>
     </div>
@@ -140,7 +168,8 @@ export default {
           );
           return order;
         }
-      }
+      },
+      face: { name: "", visible: false }
     };
   },
   methods: {
@@ -208,6 +237,7 @@ export default {
             let user = admin ? adminList[index] : userList[index];
             this.token["stamp"] = Date.now() + Number(this.token.valid) * 1000;
             user.token = this.token;
+            user.msg.dropList = user.msg.dropList || "爱心";
 
             this.$session.set("user", user);
             // 此时要判断/login的参数，若无参数，进入主页；若有参数则参数为未有权限的那个路由，跳转到那个路由
@@ -352,6 +382,25 @@ export default {
           this.$eventHub.$emit("loading", false);
         }, 1000);
       }
+    },
+    loginFace() {
+      let res = false;
+      let userList = this.$storage.get("userList") || [];
+      userList.forEach(item => {
+        if (item.name == this.face.name) res = true;
+      });
+      let adminList = this.$storage.get("adminList") || [];
+      adminList.forEach(item => {
+        if (item.name == this.face.name) res = true;
+      });
+
+      if (res) {
+        window.location.href =
+          "http://127.0.0.1:8000/users/sign_in_by_face?res=true&username=" +
+          this.face.name;
+      } else {
+        this.$message.error("该账号尚未注册，请先注册账号！");
+      }
     }
   },
   mounted() {
@@ -394,7 +443,7 @@ $page-duration: 1.5s;
   background: url("./img/login.jpg") no-repeat;
   background-size: 100% 100%;
   animation: ease infinite dropdown;
-  animation-duration: 1.5s;
+  animation-duration: 1s;
   animation-delay: 0s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
@@ -411,7 +460,7 @@ $page-duration: 1.5s;
     font-family: 楷体;
     // transition: opacity 0.5s;
     background-color: rgba($color: #fff8f1, $alpha: 1);
-    animation: ease infinite box-rotate;
+    // animation: ease infinite box-rotate;
     animation-duration: $page-duration;
     animation-delay: 0;
     animation-iteration-count: 1;

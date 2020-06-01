@@ -153,15 +153,18 @@ router.beforeEach((to, from, next) => {
 	if (to.meta.requireAuth || to.meta.requireAuth == undefined) {
 		console.log("校验token")
 		let user = session.get('user') || null
-		if (user ? user.token : false) {
+		// ? user.token : false
+		if (user) {
 			console.log("有token", user)
-			let stamp = user.token.stamp
-			// 如果有tokne并且当前时间戳小于失效时间戳，继续执行；否则跳转登录
-			if (stamp && Date.now() < stamp) {
-				next();
-				return
-			} else
-				session.remove('user')
+			next()
+			return
+			// let stamp = user.token.stamp
+			// // 如果有tokne并且当前时间戳小于失效时间戳，继续执行；否则跳转登录
+			// if (stamp && Date.now() < stamp) {
+			// 	next();
+			// 	return
+			// } else
+			// 	session.remove('user')
 		}
 		next({
 			path: "/login",

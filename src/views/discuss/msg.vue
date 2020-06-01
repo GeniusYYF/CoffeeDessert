@@ -88,6 +88,18 @@
           </div>
         </div>
       </el-form-item>
+
+      <el-form-item label="坠落">
+        <span v-show="!edit">{{user.msg.dropList}}</span>
+
+        <span v-show="edit">
+          <el-radio-group v-model="user.msg.dropList" @change="updateDrop">
+            <el-radio label="表情">表情</el-radio>
+            <el-radio label="五角星">五角星</el-radio>
+            <el-radio label="爱心">爱心</el-radio>
+          </el-radio-group>
+        </span>
+      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -145,6 +157,8 @@ export default {
       msg1.sign = msg2.sign;
       msg1.headImg = msg2.headImg;
       msg1.tags = msg2.tags;
+      msg1.dropList = msg2.dropList;
+      this.$eventHub.$emit('dropList',msg2.dropList)
     },
     handleClose(tag) {
       this.user.msg.tags.splice(this.user.msg.tags.indexOf(tag), 1);
@@ -176,6 +190,10 @@ export default {
       return ["", "success", "info", "warning", "danger"][
         Math.floor(Math.random() * (5 - 0)) + 0
       ];
+    },
+    updateDrop(radio) {
+      console.log(radio);
+      this.$eventHub.$emit("dropList", radio);
     }
   },
   beforeMount() {

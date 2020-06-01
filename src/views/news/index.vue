@@ -111,7 +111,7 @@ export default {
     }
   },
   mounted() {
-    this.screenHeight = document.body.offsetHeight;
+    this.screenHeight = document.body.offsetHeight-1;
   }
 };
 </script>

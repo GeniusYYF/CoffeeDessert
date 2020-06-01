@@ -163,6 +163,7 @@ const mutations = {
     addLike(state, { userId, speakId }) {
         console.log(userId, speakId)
         state.speaks.forEach((s, i) => {
+            console.log(s,i)
             if (s.speakId == speakId) {
                 state.speaks[i].like += 1;
                 console.log(state.speaks[i].like)

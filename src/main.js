@@ -24,6 +24,8 @@ Vue.prototype.$storage = storage;
 Vue.prototype.$session = session;
 Vue.prototype.$eventHub = new Vue();
 Vue.prototype.$date = date;
+import axios from 'axios'
+Vue.prototype.$axios = axios  // 挂载在vue实例化对象上
 
 /* eslint-disable no-new */
 new Vue({
